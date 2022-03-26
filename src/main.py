@@ -1,4 +1,6 @@
-from piece import * 
+from piece import *
+import pygame
+import pygame_menu 
 
 
 board = [
@@ -29,9 +31,14 @@ def remove_moves(piece):
             continue
         if move[0] > 4 or move[1] > 4:
             piece.moves.remove(move)
+
+
         
 
 def main():
+    
+    board_num=input("Select board(1-20):")
+
     print_board(board)
 
     rook = Rook((2, 3))
@@ -50,8 +57,6 @@ def main():
         remove_moves(piece)
         print(type(piece).__name__, piece.moves)
         
-        
-
 
 if __name__ == "__main__":
     main()
