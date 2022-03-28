@@ -1,31 +1,54 @@
+
+from glob import glob
 import pygame, sys
 from src.button import Button
-
+from src.draw import draw_big_board, draw_small_board
+from src.piece import *
+import utils
 pygame.init()
 
 SCREEN = pygame.display.set_mode((1280, 720))
-pygame.display.set_caption("Menu")
-
+pygame.display.set_caption("Chess Snake Puzzles")
+pygame.display.set_icon(pygame.image.load("pieces/king.png"))
 BG = pygame.image.load("assets/Background.png")
-
+i=0
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font("assets/font.ttf", size)
 
+def show_lvl():
+    LVL_TEXT = get_font(45).render("cona", True, "white")
+    LVL_RECT = LVL_TEXT.get_rect(center=(640, 160))
+    SCREEN.blit(LVL_TEXT, LVL_RECT)
+
 def play():
-    while True:
+    playing =True
+    
+    while(playing):
+
+        SCREEN.blit(BG, (0, 0))
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
+        
+      # SCREEN.fill((255,255,255))
+        global i
+        show_lvl()
+        OPTIONS_TEXT = get_font(45).render("Level "+str(i), True, "white")
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 560))
+       
 
-        SCREEN.fill("black")
+        PLAY_BACK = Button(image=None, pos=(640, 660), 
+                            text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
+    
+        NEXT_LVL = Button(image=None, pos=(840, 560), 
+                            text_input=">", font=get_font(75), base_color="white", hovering_color="Green")
 
-        PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
-
-        PLAY_BACK = Button(image=None, pos=(640, 460), 
-                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        LAST_LEVEL = Button(image=None, pos=(440, 560), 
+                            text_input="<", font=get_font(75), base_color="white", hovering_color="Green")
+        
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+    
+        for button in [PLAY_BACK, LAST_LEVEL, NEXT_LVL]:
+            button.changeColor(PLAY_MOUSE_POS)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -34,8 +57,21 @@ def play():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu()
+                if NEXT_LVL.checkForInput(PLAY_MOUSE_POS):
+                    i+=1
+                    if i>20:
+                        i=20
+                if LAST_LEVEL.checkForInput(PLAY_MOUSE_POS):
+                    i-=1
+                    if i<0:
+                        i=0
 
+        ##6x6
+        #draw_big_board(screen)
+        #5x5
+        # draw_small_board(SCREEN)
         pygame.display.update()
+
     
 def options():
     while True:
