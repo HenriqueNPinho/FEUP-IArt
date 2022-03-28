@@ -2,7 +2,7 @@ import pygame, sys
 from src.button import Button
 from src.draw import draw_big_board, draw_small_board
 from src.piece import *
-#import utils
+
 pygame.init()
 
 SCREEN = pygame.display.set_mode((1280, 720))
@@ -43,9 +43,7 @@ def choose_lvl():
         
         global i
         show_lvl()
-       # OPTIONS_TEXT = get_font(45).render("Level "+str(i), True, "white")
-        #OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 560))
-       
+
         CHOOSE_LVL = Button(image=None, pos= (640, 560), 
                             text_input="Level "+str(i), font=get_font(75), base_color="white", hovering_color="Green")
 
@@ -57,8 +55,7 @@ def choose_lvl():
 
         LAST_LEVEL = Button(image=None, pos=(440, 560), 
                             text_input="<", font=get_font(75), base_color="white", hovering_color="Green")
-        
-       # SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+    
     
         for button in [PLAY_BACK, LAST_LEVEL, NEXT_LVL, CHOOSE_LVL]:
             button.changeColor(PLAY_MOUSE_POS)
