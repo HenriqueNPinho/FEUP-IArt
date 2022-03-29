@@ -3,6 +3,7 @@ from pieces import *
 from draw import draw_big_board, draw_small_board
 import pygame
 import queue
+import numpy as np
 import pygame_menu 
 
 board_size = 5
@@ -50,7 +51,7 @@ def draw_board(board, moves=""):
         print()
 
 
-def set_pieces_moves(pieces):
+def set_pieces_moves(board, pieces):
     for piece in pieces:
         if type(piece).__name__ != 'King' and type(piece).__name__ != 'Knight':
             for i in range(1, board_size):
@@ -59,6 +60,14 @@ def set_pieces_moves(pieces):
             piece.set_moves()
         remove_unnecessary_moves(piece)
 
+    for i in range(len(pieces)):
+        for j in range(i+1, len(pieces)):
+            for move in list(pieces[i].moves):
+                if move == pieces[j].pos:
+                    pieces[i].moves.remove(move)
+            remove_more_moves(board, pieces[i],pieces[j].pos)    
+
+
 def remove_unnecessary_moves(piece):
     for move in list(piece.moves):
         if move[0] < 0 or move[1] < 0:
@@ -66,6 +75,7 @@ def remove_unnecessary_moves(piece):
             continue
         if move[0] > board_size-1 or move[1] > board_size-1:
             piece.moves.remove(move)
+
 
 
 def same_score(pieces):
@@ -79,6 +89,8 @@ def valid(board, pieces, moves):
     x = 0
     y = len(board)-1
 
+    path = {(x,y):"S"}
+
     for move in moves:
         if move == 'U':
             y-=1
@@ -88,7 +100,7 @@ def valid(board, pieces, moves):
             x-=1
         elif move == 'R':
             x+=1
-
+        path[(x,y)] = move
         if not(0 <= x < len(board) and 0 <= y < len(board)):
             return False
 
@@ -96,7 +108,78 @@ def valid(board, pieces, moves):
             if (x,y) == piece.pos:
                 return False
 
+        
+
     return True
+
+
+def p(path):
+    moves = list(path.keys())
+    for pos in path:
+        d = path[pos]
+        if d == 'U':
+            for move in moves:
+                if (pos[0]+1,pos[1]) == move:
+                    return False
+                elif (pos[0]-1,pos[1]) == move:
+                    return False
+                elif(pos[0], pos[1]-1) == move:
+                    return False
+                elif(pos[0]-1, pos[1]-1) == move:
+                    return False
+                elif(pos[0]+1,pos[1]-1) == move:
+                    return False
+        elif d == 'D':
+            for move in moves:
+                if (pos[0]-1,pos[1]) == move:
+                    return False
+                elif (pos[0]+1,pos[1]) == move:
+                    return False
+                elif(pos[0], pos[1]+1) == move:
+                    return False
+                elif(pos[0]+1, pos[1]+1) == move:
+                    return False
+                elif(pos[0]-1,pos[1]+1) == move:
+                    return False
+        elif d == 'L':
+            for move in moves:
+                if (pos[0],pos[1]-1) == move:
+                    return False
+                elif (pos[0],pos[1]+1) == move:
+                    return False
+                elif(pos[0]-1, pos[1]-1) == move:
+                    return False
+                elif(pos[0]-1, pos[1]) == move:
+                    return False
+                elif(pos[0]-1,pos[1]+1) == move:
+                    return False
+        elif d == 'R':
+            for move in moves:
+                if (pos[0],pos[1]+1) == move:
+                    return False
+                elif (pos[0],pos[1]-1) == move:
+                    return False
+                elif(pos[0]+1, pos[1]-1) == move:
+                    return False
+                elif(pos[0]+1, pos[1]) == move:
+                    return False
+                elif(pos[0]+1,pos[1]+1) == move:
+                    return False
+
+    return True
+
+
+        
+
+def remove_more_moves(board, piece, pos):
+    (x,y) = tuple(np.subtract(piece.pos,pos))
+
+    if x == 0 and y < 0:
+        for i in range(pos[1]+1,len(board)):
+            for move in list(piece.moves):
+                if move == (pos[0],i):
+                    piece.moves.remove(move)
+
 
 def bfs(board, pieces):
     moves = queue.Queue()
@@ -115,14 +198,13 @@ def count_score(x,y,pieces):
     for piece in pieces:
             for piece_move in piece.moves:
                     if (x,y) == piece_move:
-                        piece.score +=1 
+                        piece.score +=1
 
 def end(board, pieces, moves):
     x = 0
     y = len(board) - 1
-
+    path = {(x,y):'S'}
     count_score(x,y,pieces)
-
     for move in moves:
         if move == 'U':
             y-=1
@@ -132,8 +214,10 @@ def end(board, pieces, moves):
             x-=1
         elif move == 'R':
             x+=1
-
+        path[(x,y)] = move
         count_score(x,y,pieces)       
+
+    #if not p(path): return False
 
     if ((x,y) == (len(board)-1,0) and same_score(pieces)):
         print('Solution:', moves)
@@ -154,15 +238,15 @@ def read_file(file):
 
 def main():
     #print_board(board)
-    rook = Rook((1, 4))
+    rook = Rook((1, 1))
     #bishop = Bishop((2, 4))
-    #king = King((1,3))
-    queen = Queen((0,0))
-    #knight = Knight((2,4))
+    king = King((1,3))
+    #queen = Queen((0,0))
+    knight = Knight((3,1))
 
-    pieces = [queen, rook]
+    pieces = [rook,king]
 
-    set_pieces_moves(pieces)
+    set_pieces_moves(board, pieces)
 
     print_board(board, pieces)
 
