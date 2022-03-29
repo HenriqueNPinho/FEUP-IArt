@@ -61,9 +61,10 @@ class King:
         right = self.pos[0]+1
         left = self.pos[0]-1
         self.moves.append((self.pos[0], up))
+        self.moves.append((self.pos[0], down))
         self.moves.append((right, down))
         self.moves.append((right, self.pos[1]))
-        self.moves.append((right, down))
+        self.moves.append((right, up))
         self.moves.append((left, self.pos[1]))
         self.moves.append((left, down))
         self.moves.append((left, up))
