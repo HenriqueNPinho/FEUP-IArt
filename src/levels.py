@@ -51,23 +51,51 @@ def lvl_select(SCREEN, lvl):
         King((144,0)).draw(SCREEN, lvl)
 
     elif lvl ==11:
-        print(lvl,"\n")
+        Queen((120*5,120*5)).draw(SCREEN ,lvl)
+        Bishop((120*4,120)).draw(SCREEN, lvl)
+        Rook((120*2, 120*5)).draw(SCREEN, lvl)
+
     elif lvl ==12:
-        print(lvl,"\n")
+        Knight((120*3,120*3)).draw(SCREEN ,lvl)
+        King((120*2,120*4)).draw(SCREEN, lvl)
+        Rook((0, 120*3)).draw(SCREEN, lvl)
+
     elif lvl ==13:
-        print(lvl,"\n")
+        Queen((120*4,120*4)).draw(SCREEN ,lvl)
+        Bishop((120*4,120)).draw(SCREEN, lvl)
+        Knight((120, 120*2)).draw(SCREEN, lvl)
+
     elif lvl ==14:
-        print(lvl,"\n")
+        Queen((120*2,0)).draw(SCREEN ,lvl)
+        King((120*4,120*3)).draw(SCREEN, lvl)
+        Rook((120*5, 120)).draw(SCREEN, lvl)
+
     elif lvl ==15:
-        print(lvl,"\n")
+        King((120,120*5)).draw(SCREEN ,lvl)
+        Bishop((0,120*2)).draw(SCREEN, lvl)
+        Rook((120*4, 120*3)).draw(SCREEN, lvl)
+
     elif lvl ==16:
-        print(lvl,"\n")
+        Queen((120*3,0)).draw(SCREEN ,lvl)
+        Knight((120*3,120*3)).draw(SCREEN, lvl)
+        Rook((120*2, 120*4)).draw(SCREEN, lvl)
+
     elif lvl ==17:
-        print(lvl,"\n")
+        King((120*3,0)).draw(SCREEN ,lvl)
+        Bishop((120*4,120*3)).draw(SCREEN, lvl)
+        Knight((120*2, 120*4)).draw(SCREEN, lvl)
+
     elif lvl ==18:
-        print(lvl,"\n")
+        King((120*3,120*4)).draw(SCREEN ,lvl)
+        Bishop((120*4,120)).draw(SCREEN, lvl)
+        Queen((120, 120)).draw(SCREEN, lvl)
+
     elif lvl ==19:
-        print(lvl,"\n")
+        Knight((120*2,120)).draw(SCREEN ,lvl)
+        Bishop((0,120*2)).draw(SCREEN, lvl)
+        Rook((120*4, 120*4)).draw(SCREEN, lvl)
     else:
-        print(lvl,"\n")
+        King((120*2,120*3)).draw(SCREEN ,lvl)
+        Knight((120,120*2)).draw(SCREEN, lvl)
+        Queen((120*2, 120*5)).draw(SCREEN, lvl)
 
