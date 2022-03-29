@@ -43,7 +43,7 @@ def draw_board(board, moves=""):
 
     for x, row in enumerate(board):
         for y, col in enumerate(row):
-            if (x,y) in pos:
+            if (y,x) in pos:
                 print('+ ', end='')
             else:
                 print(col + ' ', end='')
@@ -95,32 +95,34 @@ def valid(board, pieces, moves):
         for piece in pieces:
             if (x,y) == piece.pos:
                 return False
-            for piece_move in piece.moves:
-                if (x,y) == piece_move:
-                    piece.score +=1
 
-        return True
-
-
-
+    return True
 
 def bfs(board, pieces):
-    nums = queue.Queue()
-    nums.put("")
+    moves = queue.Queue()
+    moves.put("")
     add = ""
 
     while not end(board, pieces, add): 
-        add = nums.get()
+        add = moves.get()
         #print(add)
-        for j in ["L", "R", "U", "D"]:
-            put = add + j
-            if valid(board, pieces, put):
-                nums.put(put)
+        for d in ['L', 'R', 'U', 'D']:
+            move = add + d
+            if valid(board, pieces, move):
+                moves.put(move)
 
+def count_score(x,y,pieces):
+    for piece in pieces:
+            for piece_move in piece.moves:
+                    if (x,y) == piece_move:
+                        piece.score +=1 
 
 def end(board, pieces, moves):
     x = 0
     y = len(board) - 1
+
+    count_score(x,y,pieces)
+
     for move in moves:
         if move == 'U':
             y-=1
@@ -131,10 +133,13 @@ def end(board, pieces, moves):
         elif move == 'R':
             x+=1
 
-    if ((x,y) == (len(board)-1,0)):
-        print('End:', moves)
+        count_score(x,y,pieces)       
+
+    if ((x,y) == (len(board)-1,0) and same_score(pieces)):
+        print('Solution:', moves)
         draw_board(board, moves)
         return True
+        
     reset_score(pieces)
     return False
 
@@ -149,18 +154,13 @@ def read_file(file):
 
 def main():
     #print_board(board)
-
-    board = read_file('lvl1.txt')
-    print(board)
-
-
-    rook = Rook((1, 1))
-    #bishop = Bishop((2, 1))
-    king = King((1,3))
-    #queen = Queen((0,0))
+    rook = Rook((1, 4))
+    #bishop = Bishop((2, 4))
+    #king = King((1,3))
+    queen = Queen((0,0))
     #knight = Knight((2,4))
 
-    pieces = [king, rook]
+    pieces = [queen, rook]
 
     set_pieces_moves(pieces)
 
@@ -168,8 +168,6 @@ def main():
 
 
     bfs(board, pieces)
-
-
 
     
 
