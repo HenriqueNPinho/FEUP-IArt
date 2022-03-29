@@ -2,16 +2,16 @@ import pygame
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-BOARD_BIG=[(1,1),(480,1),(0,0),(0,480),(0,480),(480,480),(480,480),(480,0)]
-BOARD_SMALL=[(1,1),(480,1),(0,0),(0,480),(0,480),(480,480),(480,480),(480,0)]
+BOARD_BIG=[(1,1),(720,1),(0,0),(0,720),(0,720),(720,720),(720,720),(720,0)]
+BOARD_SMALL=[(1,1),(720,1),(0,0),(0,720),(0,720),(720,720),(720,720),(720,0)]
 
-for i in range(80,480,80):
+for i in range(120,720,120):
     BOARD_BIG.append((0,i))
-    BOARD_BIG.append((480,i))
+    BOARD_BIG.append((720,i))
 
-for i in range(96,480,96):
+for i in range(144,720,144):
     BOARD_SMALL.append((0,i))
-    BOARD_SMALL.append((480,i))
+    BOARD_SMALL.append((720,i))
 
 def draw_big_board(screen):
     draw_lines(screen, BOARD_BIG)

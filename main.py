@@ -1,30 +1,34 @@
 import pygame, sys
+from src.levels import *
 from src.button import Button
 from src.draw import draw_big_board, draw_small_board
 from src.piece import *
 
 pygame.init()
+clock = pygame.time.Clock()
 
 SCREEN = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Chess Snake Puzzles")
 pygame.display.set_icon(pygame.image.load("pieces/king.png"))
 BG = pygame.image.load("assets/Background.png") #mudar imagem
 i=1
+
 def get_font(size):
     return pygame.font.Font("assets/font2.ttf", size)
 
 def play():
+
     playing=True
     while(playing):
+        clock.tick(30)
         SCREEN.fill("White")
-
-        MENU_TEXT = get_font(150).render("PLAY LOOP", True, "black")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+        SCREEN.blit(BG, (720, 0))
+        draw_small_board(SCREEN)
+        lvl_1(SCREEN, i)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-        SCREEN.blit(MENU_TEXT, MENU_RECT)
         pygame.display.update()
 
 
@@ -35,9 +39,8 @@ def show_lvl():
 
 def choose_lvl():
     choosing =True
-    
     while(choosing):
-
+        clock.tick(30)
         SCREEN.blit(BG, (0, 0))
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
         
@@ -70,14 +73,15 @@ def choose_lvl():
                     main_menu()
                 if CHOOSE_LVL.checkForInput(PLAY_MOUSE_POS):
                     play()
+                    choosing=False
                 if NEXT_LVL.checkForInput(PLAY_MOUSE_POS):
                     i+=1
                     if i>20:
-                        i=20
+                        i=1
                 if LAST_LEVEL.checkForInput(PLAY_MOUSE_POS):
                     i-=1
                     if i<1:
-                        i=1
+                        i=20
 
         pygame.display.update()
 
@@ -109,9 +113,10 @@ def options():
         pygame.display.update()
 
 def main_menu():
-    while True:
+    menu_loop=True
+    while menu_loop:
         SCREEN.blit(BG, (0, 0))
-
+        clock.tick(30)
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         MENU_TEXT = get_font(150).render("MAIN   MENU", True, "#b68f40")
@@ -137,6 +142,7 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     choose_lvl()
+                    menu_loop=False
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):

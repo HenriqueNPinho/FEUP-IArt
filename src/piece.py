@@ -1,3 +1,6 @@
+
+import pygame
+
 class Piece:
     def __init__(self, pos, moves=[]):
         self.pos = pos
@@ -18,6 +21,15 @@ class Rook(Piece):
         self.moves.append((self.pos[0], self.pos[1]-i))
         self.moves.append((self.pos[0]+i, self.pos[1]))
         self.moves.append((self.pos[0]-i, self.pos[1]))
+    
+    def draw(self,SCREEN, lvl):
+         piece = pygame.image.load("pieces/rook.png")
+         if lvl<=10:
+             piece = pygame.transform.scale(piece, (144,144))
+         else:
+             piece = pygame.transform.scale(piece, (120,120))
+         pygame.Surface.blit(SCREEN, piece, self.pos)
+
 
 
 
@@ -33,6 +45,13 @@ class Bishop(Piece):
         self.moves.append((self.pos[0]+i, self.pos[1]-i))
         self.moves.append((self.pos[0]-i, self.pos[1]+i))
 
+    def draw(self,SCREEN, lvl):
+         piece = pygame.image.load("pieces/bishop.png")
+         if lvl<=10:
+             piece = pygame.transform.scale(piece, (144,144))
+         else:
+             piece = pygame.transform.scale(piece, (120,120))
+         pygame.Surface.blit(SCREEN, piece, self.pos)
 
 
 
@@ -55,7 +74,13 @@ class King(Piece):
         self.moves.append((left, down))
         self.moves.append((left, up))
 
-
+    def draw(self,SCREEN, lvl):
+         piece = pygame.image.load("pieces/king.png")
+         if lvl<=10:
+             piece = pygame.transform.scale(piece, (144,144))
+         else:
+             piece = pygame.transform.scale(piece, (120,120))
+         pygame.Surface.blit(SCREEN, piece, self.pos)
 
 
 
@@ -73,7 +98,13 @@ class Queen(Piece):
         self.moves.append((self.pos[0]-i, self.pos[1]+i))
         self.moves.append((self.pos[0]-i, self.pos[1]-i))
 
-
+    def draw(self,SCREEN, lvl):
+         piece = pygame.image.load("pieces/queen.png")
+         if lvl<=10:
+             piece = pygame.transform.scale(piece, (144,144))
+         else:
+             piece = pygame.transform.scale(piece, (120,120))
+         pygame.Surface.blit(SCREEN, piece, self.pos)
 
 
 class Knight(Piece):
@@ -89,4 +120,11 @@ class Knight(Piece):
         self.moves.append((self.pos[0]-1, self.pos[1]+2))
         self.moves.append((self.pos[0]+1, self.pos[1]+2))
         self.moves.append((self.pos[0]+2, self.pos[1]+1))
-        
+    
+    def draw(self,SCREEN, lvl):
+         piece = pygame.image.load("pieces/knight.png")
+         if lvl<=10:
+             piece = pygame.transform.scale(piece, (144,144))
+         else:
+             piece = pygame.transform.scale(piece, (120,120))
+         pygame.Surface.blit(SCREEN, piece, self.pos)
