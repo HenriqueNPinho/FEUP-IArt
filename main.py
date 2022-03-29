@@ -2,7 +2,7 @@ import pygame, sys
 from src.levels import *
 from src.button import Button
 from src.draw import draw_big_board, draw_small_board
-from src.piece import *
+from src.pieces import *
 
 pygame.init()
 clock = pygame.time.Clock()

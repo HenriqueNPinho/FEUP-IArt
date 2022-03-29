@@ -1,4 +1,5 @@
-from src.piece import *
+from src.pieces import *
+
 def lvl_1(SCREEN,lvl):
     Rook((144,144)).draw(SCREEN ,lvl)
     King((144,144*3)).draw(SCREEN, lvl)

@@ -1,20 +1,11 @@
-
 import pygame
 
-class Piece:
+class Rook:
     def __init__(self, pos, moves=[]):
         self.pos = pos
         self.moves = moves
-
-    def set_moves(self, i):
-        pass
-
-
-
-
-class Rook(Piece):
-    def __init__(self, pos, moves=[]):
-        super().__init__(pos, moves)
+        self.symbol = 'R'
+        self.score = 0
     
     def set_moves(self, i):
         self.moves.append((self.pos[0], self.pos[1]+i))
@@ -31,13 +22,12 @@ class Rook(Piece):
          pygame.Surface.blit(SCREEN, piece, self.pos)
 
 
-
-
-
-
-class Bishop(Piece):
+class Bishop:
     def __init__(self, pos, moves=[]):
-        super().__init__(pos, moves)
+        self.pos = pos
+        self.moves = moves
+        self.symbol = 'B'
+        self.score = 0
 
     def set_moves(self, i):
         self.moves.append((self.pos[0]+i, self.pos[1]+i))
@@ -56,11 +46,15 @@ class Bishop(Piece):
 
 
 
-class King(Piece):
+class King:
     def __init__(self, pos, moves=[]):
-        super().__init__(pos, moves)
+        self.pos = pos
+        self.moves = moves
+        self.symbol = 'K'
+        self.score = 0
 
     def set_moves(self):
+        (x, y) = self.pos
         
         up = self.pos[1]-1
         down = self.pos[1]+1
@@ -84,9 +78,12 @@ class King(Piece):
 
 
 
-class Queen(Piece):
+class Queen:
     def __init__(self, pos, moves=[]):
-        super().__init__(pos, moves)
+        self.pos = pos
+        self.moves = moves
+        self.symbol = 'Q'
+        self.score = 0
 
     def set_moves(self, i):
         self.moves.append((self.pos[0], self.pos[1]+i))
@@ -107,9 +104,12 @@ class Queen(Piece):
          pygame.Surface.blit(SCREEN, piece, self.pos)
 
 
-class Knight(Piece):
+class Knight:
     def __init__(self, pos, moves=[]):
-        super().__init__(pos, moves)
+        self.pos = pos
+        self.moves = moves
+        self.symbol = 'C'
+        self.score = 0
 
     def set_moves(self):
         self.moves.append((self.pos[0]+2, self.pos[1]-1))
