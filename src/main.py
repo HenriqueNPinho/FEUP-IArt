@@ -2,7 +2,7 @@ import enum
 from pieces import *
 from draw import draw_big_board, draw_small_board
 import pygame
-import queue
+from queue import Queue
 import numpy as np
 import pygame_menu 
 
@@ -89,7 +89,7 @@ def valid(board, pieces, moves):
     x = 0
     y = len(board)-1
 
-    path = {(x,y):"S"}
+    path = [(x,y,'S')]
 
     for move in moves:
         if move == 'U':
@@ -100,16 +100,69 @@ def valid(board, pieces, moves):
             x-=1
         elif move == 'R':
             x+=1
-        path[(x,y)] = move
+
+        path.append((x,y,move))
+
         if not(0 <= x < len(board) and 0 <= y < len(board)):
             return False
 
         for piece in pieces:
             if (x,y) == piece.pos:
+                return False   
+
+    for i in range(0, len(path)):
+        for j in range(0, i):
+            if i == j:
+                continue
+            (x,y,d) = path[i]
+            (w,z,_) = path[j]
+            if (x,y) == (w,z):
                 return False
-
-        
-
+            if d == 'R':
+                if (x,y+1) == (w,z):
+                    return False
+                if (x,y-1) == (w,z):
+                    return False
+                if (x+1,y) == (w,z):
+                    return False
+                if (x+1,y-1) == (w,z):
+                    return False
+                if (x+1,y+1) == (w,z):
+                    return False
+            elif d == 'L':
+                if (x,y-1) == (w,z):
+                    return False
+                if (x,y+1) == (w,z):
+                    return False
+                if (x-1,y) == (w,z):
+                    return False
+                if (x-1,y-1) == (w,z):
+                    return False
+                if (x-1,y+1) == (w,z):
+                    return False
+            elif d == 'U':
+                if (x+1,y) == (w,z):
+                    return False
+                if (x-1,y) == (w,z):
+                    return False
+                if (x,y-1) == (w,z):
+                    return False
+                if (x+1,y-1) == (w,z):
+                    return False
+                if (x-1,y-1) == (w,z):
+                    return False
+            elif d == 'D':
+                if (x+1,y) == (w,z):
+                    return False
+                if (x-1,y) == (w,z):
+                    return False
+                if (x-1,y+1) == (w,z):
+                    return False
+                if (x+1,y+1) == (w,z):
+                    return False
+                if (x,y+1) == (w,z):
+                    return False
+            
     return True
 
 
@@ -182,7 +235,7 @@ def remove_more_moves(board, piece, pos):
 
 
 def bfs(board, pieces):
-    moves = queue.Queue()
+    moves = Queue()
     moves.put("")
     add = ""
 
@@ -217,7 +270,10 @@ def end(board, pieces, moves):
         path[(x,y)] = move
         count_score(x,y,pieces)       
 
-    #if not p(path): return False
+    #if not p(path): 
+     #   path.clear()
+      #  return False
+
 
     if ((x,y) == (len(board)-1,0) and same_score(pieces)):
         print('Solution:', moves)
@@ -238,13 +294,13 @@ def read_file(file):
 
 def main():
     #print_board(board)
-    rook = Rook((1, 1))
-    #bishop = Bishop((2, 4))
+    rook = Rook((4, 3))
+    bishop = Bishop((2, 4))
     king = King((1,3))
-    #queen = Queen((0,0))
-    knight = Knight((3,1))
+    queen = Queen((1,1))
+    knight = Knight((3,4))
 
-    pieces = [rook,king]
+    pieces = [bishop,rook]
 
     set_pieces_moves(board, pieces)
 
