@@ -1,17 +1,30 @@
 import pygame
 
 class Rook:
-    def __init__(self, pos, moves=[]):
+    def __init__(self, pos, board_size):
         self.pos = pos
-        self.moves = moves
+        self.moves = self.__set_moves(board_size)
         self.symbol = 'R'
         self.score = 0
     
-    def set_moves(self, i):
-        self.moves.append((self.pos[0], self.pos[1]+i))
-        self.moves.append((self.pos[0], self.pos[1]-i))
-        self.moves.append((self.pos[0]+i, self.pos[1]))
-        self.moves.append((self.pos[0]-i, self.pos[1]))
+    def __set_moves(self, board_size):
+        moves = []
+        for row in range(0, board_size):
+            for col in range(0, board_size):
+                for i in range(0, board_size):
+                    if (row, col) == (self.pos[0] + i, self.pos[1]):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0], self.pos[1] + i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] - i, self.pos[1]):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0], self.pos[1] - i):
+                        moves.append((row, col))
+                        break
+        return moves
     
     def draw(self,SCREEN, lvl):
          piece = pygame.image.load("pieces/rook.png")
@@ -23,17 +36,30 @@ class Rook:
 
 
 class Bishop:
-    def __init__(self, pos, moves=[]):
+    def __init__(self, pos, board_size):
         self.pos = pos
-        self.moves = moves
+        self.moves = self.__set_moves(board_size)
         self.symbol = 'B'
         self.score = 0
 
-    def set_moves(self, i):
-        self.moves.append((self.pos[0]+i, self.pos[1]+i))
-        self.moves.append((self.pos[0]-i, self.pos[1]-i))
-        self.moves.append((self.pos[0]+i, self.pos[1]-i))
-        self.moves.append((self.pos[0]-i, self.pos[1]+i))
+    def __set_moves(self, board_size):
+        moves = []
+        for row in range(0, board_size):
+            for col in range(0, board_size):
+                for i in range(0, board_size):
+                    if (row, col) == (self.pos[0] + i, self.pos[1] + i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] + i, self.pos[1] - i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] - i, self.pos[1] - i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] - i, self.pos[1] + i):
+                        moves.append((row, col))
+                        break
+        return moves
 
     def draw(self,SCREEN, lvl):
          piece = pygame.image.load("pieces/bishop.png")
@@ -47,27 +73,34 @@ class Bishop:
 
 
 class King:
-    def __init__(self, pos, moves=[]):
+    def __init__(self, pos, board_size):
         self.pos = pos
-        self.moves = moves
+        self.moves = self.__set_moves(board_size)
         self.symbol = 'K'
         self.score = 0
 
-    def set_moves(self):
-        (x, y) = self.pos
-        
-        up = self.pos[1]-1
-        down = self.pos[1]+1
-        right = self.pos[0]+1
-        left = self.pos[0]-1
-        self.moves.append((self.pos[0], up))
-        self.moves.append((self.pos[0], down))
-        self.moves.append((right, down))
-        self.moves.append((right, self.pos[1]))
-        self.moves.append((right, up))
-        self.moves.append((left, self.pos[1]))
-        self.moves.append((left, down))
-        self.moves.append((left, up))
+    def __set_moves(self, board_size):
+        moves = []
+        for row in range(0, board_size):
+            for col in range(0, board_size):
+                if (row, col) == (self.pos[0] + 1, self.pos[1]):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0], self.pos[1] + 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 1, self.pos[1]):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0], self.pos[1] - 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] + 1, self.pos[1] + 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 1, self.pos[1] + 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 1, self.pos[1] - 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] + 1, self.pos[1] - 1):
+                    moves.append((row, col))
+
+        return moves
 
     def draw(self,SCREEN, lvl):
          piece = pygame.image.load("pieces/king.png")
@@ -80,21 +113,43 @@ class King:
 
 
 class Queen:
-    def __init__(self, pos, moves=[]):
+    def __init__(self, pos, board_size):
         self.pos = pos
-        self.moves = moves
+        self.moves = self.__set_moves(board_size)
         self.symbol = 'Q'
         self.score = 0
 
-    def set_moves(self, i):
-        self.moves.append((self.pos[0], self.pos[1]+i))
-        self.moves.append((self.pos[0], self.pos[1]-i))
-        self.moves.append((self.pos[0]+i, self.pos[1]+i))
-        self.moves.append((self.pos[0]+i, self.pos[1]))
-        self.moves.append((self.pos[0]+i, self.pos[1]-i))
-        self.moves.append((self.pos[0]-i, self.pos[1]))
-        self.moves.append((self.pos[0]-i, self.pos[1]+i))
-        self.moves.append((self.pos[0]-i, self.pos[1]-i))
+    def __set_moves(self, board_size):
+        moves = []
+        for row in range(0, board_size):
+            for col in range(0, board_size):
+                for i in range(0, board_size):
+                    if (row, col) == (self.pos[0] + i, self.pos[1]):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0], self.pos[1] + i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] - i, self.pos[1]):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0], self.pos[1] - i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] + i, self.pos[1] + i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] - i, self.pos[1] + i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] - i, self.pos[1] - i):
+                        moves.append((row, col))
+                        break
+                    if (row, col) == (self.pos[0] + i, self.pos[1] - i):
+                        moves.append((row, col))
+                        break
+
+        return moves
 
     def draw(self,SCREEN, lvl):
          piece = pygame.image.load("pieces/queen.png")
@@ -106,21 +161,34 @@ class Queen:
 
 
 class Knight:
-    def __init__(self, pos, moves=[]):
+    def __init__(self, pos, board_size):
         self.pos = pos
-        self.moves = moves
+        self.moves = self.__set_moves(board_size)
         self.symbol = 'C'
         self.score = 0
 
-    def set_moves(self):
-        self.moves.append((self.pos[0]+2, self.pos[1]-1))
-        self.moves.append((self.pos[0]+1, self.pos[1]-2))
-        self.moves.append((self.pos[0]-1, self.pos[1]-2))
-        self.moves.append((self.pos[0]-2, self.pos[1]-1))
-        self.moves.append((self.pos[0]-2, self.pos[1]+1))
-        self.moves.append((self.pos[0]-1, self.pos[1]+2))
-        self.moves.append((self.pos[0]+1, self.pos[1]+2))
-        self.moves.append((self.pos[0]+2, self.pos[1]+1))
+    def __set_moves(self, board_size):
+        moves = []
+        for row in range(0, board_size):
+            for col in range(0, board_size):
+                if (row, col) == (self.pos[0] + 2, self.pos[1] - 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] + 1, self.pos[1] - 2):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 1, self.pos[1] - 2):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 2, self.pos[1] - 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 2, self.pos[1] + 1):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] - 1, self.pos[1] + 2):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] + 1, self.pos[1] + 2):
+                    moves.append((row, col))
+                if (row, col) == (self.pos[0] + 2, self.pos[1] + 1):
+                    moves.append((row, col))
+
+        return moves
     
     def draw(self,SCREEN, lvl):
          piece = pygame.image.load("pieces/knight.png")

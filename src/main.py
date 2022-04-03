@@ -1,12 +1,10 @@
-import enum
+from typing import final
 from pieces import *
-from draw import draw_big_board, draw_small_board
-import pygame
 from queue import Queue
 import numpy as np
-import pygame_menu 
+from state import *
 
-board_size = 5
+board_size = 6
 
 board = [[' ']*board_size for _ in range(board_size)]
 
@@ -26,7 +24,7 @@ def print_board(board, pieces):
             y = y+1
             print('\n' + '-'*16)
 
-def draw_board(board, moves=""):
+def draw_board(board, pieces, moves=""):
     x = 0
     y = len(board)-1
     pos = set()
@@ -47,36 +45,11 @@ def draw_board(board, moves=""):
             if (y,x) in pos:
                 print('+ ', end='')
             else:
+                for piece in pieces:
+                    if piece.pos == (y,x):
+                        col = piece.symbol
                 print(col + ' ', end='')
         print()
-
-
-def set_pieces_moves(board, pieces):
-    for piece in pieces:
-        if type(piece).__name__ != 'King' and type(piece).__name__ != 'Knight':
-            for i in range(1, board_size):
-                piece.set_moves(i)
-        else:
-            piece.set_moves()
-        remove_unnecessary_moves(piece)
-
-    for i in range(len(pieces)):
-        for j in range(i+1, len(pieces)):
-            for move in list(pieces[i].moves):
-                if move == pieces[j].pos:
-                    pieces[i].moves.remove(move)
-            remove_more_moves(board, pieces[i],pieces[j].pos)    
-
-
-def remove_unnecessary_moves(piece):
-    for move in list(piece.moves):
-        if move[0] < 0 or move[1] < 0:
-            piece.moves.remove(move)
-            continue
-        if move[0] > board_size-1 or move[1] > board_size-1:
-            piece.moves.remove(move)
-
-
 
 def same_score(pieces):
     scores = []
@@ -110,6 +83,12 @@ def valid(board, pieces, moves):
             if (x,y) == piece.pos:
                 return False   
 
+    if not is_valid(path):
+        return False
+            
+    return True
+
+def is_valid(path):
     for i in range(0, len(path)):
         for j in range(0, i):
             if i == j:
@@ -162,67 +141,7 @@ def valid(board, pieces, moves):
                     return False
                 if (x,y+1) == (w,z):
                     return False
-            
     return True
-
-
-def p(path):
-    moves = list(path.keys())
-    for pos in path:
-        d = path[pos]
-        if d == 'U':
-            for move in moves:
-                if (pos[0]+1,pos[1]) == move:
-                    return False
-                elif (pos[0]-1,pos[1]) == move:
-                    return False
-                elif(pos[0], pos[1]-1) == move:
-                    return False
-                elif(pos[0]-1, pos[1]-1) == move:
-                    return False
-                elif(pos[0]+1,pos[1]-1) == move:
-                    return False
-        elif d == 'D':
-            for move in moves:
-                if (pos[0]-1,pos[1]) == move:
-                    return False
-                elif (pos[0]+1,pos[1]) == move:
-                    return False
-                elif(pos[0], pos[1]+1) == move:
-                    return False
-                elif(pos[0]+1, pos[1]+1) == move:
-                    return False
-                elif(pos[0]-1,pos[1]+1) == move:
-                    return False
-        elif d == 'L':
-            for move in moves:
-                if (pos[0],pos[1]-1) == move:
-                    return False
-                elif (pos[0],pos[1]+1) == move:
-                    return False
-                elif(pos[0]-1, pos[1]-1) == move:
-                    return False
-                elif(pos[0]-1, pos[1]) == move:
-                    return False
-                elif(pos[0]-1,pos[1]+1) == move:
-                    return False
-        elif d == 'R':
-            for move in moves:
-                if (pos[0],pos[1]+1) == move:
-                    return False
-                elif (pos[0],pos[1]-1) == move:
-                    return False
-                elif(pos[0]+1, pos[1]-1) == move:
-                    return False
-                elif(pos[0]+1, pos[1]) == move:
-                    return False
-                elif(pos[0]+1,pos[1]+1) == move:
-                    return False
-
-    return True
-
-
-        
 
 def remove_more_moves(board, piece, pos):
     (x,y) = tuple(np.subtract(piece.pos,pos))
@@ -245,7 +164,39 @@ def bfs(board, pieces):
         for d in ['L', 'R', 'U', 'D']:
             move = add + d
             if valid(board, pieces, move):
+                
                 moves.put(move)
+
+def bfs_state(initial_state):
+    states = Queue()
+    states.put(initial_state)
+    current_state = initial_state
+    i = 1
+    while not end_state(current_state):
+        current_state = states.get()
+        for d in ['L', 'R', 'U', 'D']:
+            new_state = current_state.move(d)
+            if valid_state(new_state):
+                states.put(new_state)
+        i += 1
+    
+    print(states.qsize(),i,new_state.depth,new_state.get_path())
+
+def valid_state(state):
+    (x, y) = state.pos
+    board = state.board
+    pieces = state.pieces
+
+    if not(0 <= x < len(board) and 0 <= y < len(board)):
+            return False
+
+    for piece in pieces:
+        if piece.pos == state.pos:
+            return False
+
+    return is_valid(state.get_path())
+        
+
 
 def count_score(x,y,pieces):
     for piece in pieces:
@@ -253,11 +204,37 @@ def count_score(x,y,pieces):
                     if (x,y) == piece_move:
                         piece.score +=1
 
+def end_state(state):
+    pieces = state.pieces
+
+    final_pos = (len(state.board) - 1, 0)
+
+    if state.pos != final_pos:
+        return False
+
+    if not check_final_score(state):
+        return False
+
+    print()
+
+    return True
+
+def check_final_score(state):
+    scores = state.get_pieces_score()
+    return all(score == scores[0] for score in scores)
+
+
+
+    
+    
+
+
 def end(board, pieces, moves):
     x = 0
     y = len(board) - 1
-    path = {(x,y):'S'}
+    
     count_score(x,y,pieces)
+
     for move in moves:
         if move == 'U':
             y-=1
@@ -267,17 +244,12 @@ def end(board, pieces, moves):
             x-=1
         elif move == 'R':
             x+=1
-        path[(x,y)] = move
+            
         count_score(x,y,pieces)       
-
-    #if not p(path): 
-     #   path.clear()
-      #  return False
-
 
     if ((x,y) == (len(board)-1,0) and same_score(pieces)):
         print('Solution:', moves)
-        draw_board(board, moves)
+        draw_board(board, pieces, moves)
         return True
         
     reset_score(pieces)
@@ -294,22 +266,30 @@ def read_file(file):
 
 def main():
     #print_board(board)
-    rook = Rook((4, 3))
-    bishop = Bishop((2, 4))
-    king = King((1,3))
-    queen = Queen((1,1))
-    knight = Knight((3,4))
+    rook = Rook((5, 1), board_size)
+    bishop = Bishop((2, 1), board_size)
+    king = King((4,3), board_size)
+    queen = Queen((2,0), board_size)
+    knight = Knight((1,4), board_size)
 
-    pieces = [bishop,rook]
+    pieces = [queen,king,rook]
 
-    set_pieces_moves(board, pieces)
+    initial_pos = (0, board_size - 1)
+
+    initial_state = State(initial_pos,board, pieces)
+
+    for piece in pieces:
+        print(piece.pos,piece.moves)
+
+    input()
+
+    #set_pieces_moves(board, pieces)
 
     print_board(board, pieces)
 
+    #bfs(board, pieces)
+    bfs_state(initial_state)
 
-    bfs(board, pieces)
-
-    
 
 if __name__ == "__main__":
     main()
