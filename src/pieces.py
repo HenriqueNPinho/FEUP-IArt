@@ -11,7 +11,7 @@ class Rook:
         moves = []
         for row in range(0, board_size):
             for col in range(0, board_size):
-                for i in range(0, board_size):
+                for i in range(1, board_size):
                     if (row, col) == (self.pos[0] + i, self.pos[1]):
                         moves.append((row, col))
                         break
@@ -46,7 +46,7 @@ class Bishop:
         moves = []
         for row in range(0, board_size):
             for col in range(0, board_size):
-                for i in range(0, board_size):
+                for i in range(1, board_size):
                     if (row, col) == (self.pos[0] + i, self.pos[1] + i):
                         moves.append((row, col))
                         break
@@ -123,7 +123,7 @@ class Queen:
         moves = []
         for row in range(0, board_size):
             for col in range(0, board_size):
-                for i in range(0, board_size):
+                for i in range(1, board_size):
                     if (row, col) == (self.pos[0] + i, self.pos[1]):
                         moves.append((row, col))
                         break

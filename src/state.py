@@ -90,4 +90,10 @@ class State:
             pieces_hits = parent_node.pieces_hits
             parent_node = parent_node.parent_node
 
+        i = 0
+        for piece in self.pieces:
+            if parent_node == None:
+                hits[i] += pieces_hits[piece]    
+            i += 1
+            
         return hits

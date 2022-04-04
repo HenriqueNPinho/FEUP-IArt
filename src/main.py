@@ -1,19 +1,22 @@
 from pieces import *
 from queue import Queue
 from state import *
+import numpy as np
 
 board_size = 6
 board = [[' ']*board_size for _ in range(board_size)]
 
 def main():
 
-    rook = Rook((5, 1), board_size)
+    rook = Rook((0, 3), board_size)
     bishop = Bishop((2, 1), board_size)
-    king = King((4,3), board_size)
+    king = King((2,4), board_size)
     queen = Queen((2,0), board_size)
-    knight = Knight((1,4), board_size)
+    knight = Knight((3,3), board_size)
 
-    pieces = [queen,king,rook]
+    pieces = [rook,king,knight]
+    
+    remove_pieces_moves(pieces)
 
     initial_pos = (0, board_size - 1)
 
@@ -163,6 +166,80 @@ def check_final_hits(state):
     hits = state.get_pieces_hits()
     return all(hit == hits[0] for hit in hits)
 
+
+def remove_pieces_moves(pieces):
+    for i in range(0, len(pieces)):
+        piece = pieces[i]
+        if type(piece).__name__ == 'King' or type(piece).__name__ == 'Knight':
+            for j in range(0, len(pieces)):
+                if i == j:
+                    continue
+                for move in piece.moves:
+                    if move == pieces[j].pos:
+                        pieces[i].moves.remove(move)
+        else:
+            remove_pieces_moves_aux(pieces)
+
+def remove_pieces_moves_aux(pieces):
+    for i in range(0, len(pieces)):
+        piece = pieces[i]
+        for j in range(0, len(pieces)):
+            if i == j:
+                continue
+            else:
+                piece_2_pos = pieces[j].pos
+                (x, y) = tuple(np.subtract(piece.pos, piece_2_pos))
+                dif = abs(piece.pos[0] - piece.pos[1])
+                dif_2 = abs(piece_2_pos[0] - piece_2_pos[1])
+
+                if x == 0 and y < 0: # DOWN
+                    for k in range(piece_2_pos[1], board_size):
+                        for move in piece.moves:
+                            if move == (piece_2_pos[0], k):
+                                pieces[i].moves.remove(move)
+                if x == 0 and y > 0: # UP
+                    for k in range(0, piece_2_pos[1]):
+                        for move in piece.moves:
+                            if move == (piece_2_pos[0], k):
+                                pieces[i].moves.remove(move)
+                if x < 0 and y == 0: # RIGHT
+                    for k in range(piece_2_pos[0], board_size):
+                        for move in piece.moves:
+                            if move == (k, piece_2_pos[1]):
+                                pieces[i].moves.remove(move)
+                if x > 0 and y == 0: # LEFT
+                    for k in range(0, piece_2_pos[0]+1):
+                        for move in piece.moves:
+                            if move == (k, piece_2_pos[1]):
+                                pieces[i].moves.remove(move)
+                if dif == dif_2:
+                    if piece.pos[0] < piece_2_pos[0] and piece.pos[1] < piece_2_pos[1]:
+                        for move in pieces.moves:
+                            for k in range(piece_2_pos[0], board_size):
+                                for l in range(piece_2_pos[1], board_size):
+                                    if move == (k, l):
+                                        pieces[i].moves.remove(move)
+                    if piece.pos[0] < piece_2_pos[0] and piece.pos[1] > piece_2_pos[1]:
+                        for move in pieces.moves:
+                            for k in range(piece_2_pos[0], board_size):
+                                for l in range(piece_2_pos[1], board_size):
+                                    if move == (k, l):
+                                        pieces[i].moves.remove(move)
+                    if piece.pos[0] > piece_2_pos[0] and piece.pos[1] < piece_2_pos[1]:
+                        for move in pieces.moves:
+                            for k in range(0, piece_2_pos[0]):
+                                for l in range(0, piece_2_pos[1]):
+                                    if move == (k, l):
+                                        pieces[i].moves.remove(move)
+                    if piece.pos[0] > piece_2_pos[0] and piece.pos[1] > piece_2_pos[1]:
+                        for move in pieces.moves:
+                            for k in range(0, piece_2_pos[0]):
+                                for l in range(0, piece_2_pos[1]):
+                                    if move == (k, l):
+                                        pieces[i].moves.remove(move)
+
+                
+                
 
 if __name__ == "__main__":
     main()
