@@ -11,18 +11,20 @@ board = [[' ']*board_size for _ in range(board_size)]
 def print_board(board, pieces):
         x = 0
         y = 0
+        print('\n' + '-'*19)
         for row in board:
             print('|', end='')
             for col in row:
                 for piece in pieces:
-                    if piece.pos is (x,y):                        
+                    if piece.pos == (x,y): 
+                                        
                         col = piece.symbol
                 
                 print(col + ' |', end='')
                 x = x+1
             x = 0
             y = y+1
-            print('\n' + '-'*16)
+            print('\n' + '-'*19)
 
 def draw_board(board, pieces, moves=""):
     x = 0
@@ -274,17 +276,19 @@ def main():
 
     initial_state = State(initial_pos,board, pieces)
 
-    for piece in pieces:
-        print(piece.pos,piece.moves)
+   # for piece in pieces:
+    #    print(piece.pos,piece.moves)
 
-    input()
+    a=input("1 for human, 0 for computer: ")
 
     #set_pieces_moves(board, pieces)
 
     print_board(board, pieces)
-
-    #bfs(board, pieces)
-    bfs_state(initial_state)
+    if(a==0):
+        #bfs(board, pieces)
+        bfs_state(initial_state)
+    else:
+        print("fazer isto")
 
 
 if __name__ == "__main__":
