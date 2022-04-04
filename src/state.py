@@ -6,7 +6,7 @@ class State:
         self.parent_node = parent_node
         self.depth = depth
         self.pieces = pieces
-        self.pieces_score = self.__set_pieces_score()
+        self.pieces_hits = self.__set_pieces_hits()
 
     def move(self, dir):
         current_pos = self.pos
@@ -53,20 +53,20 @@ class State:
             
         return scores
 
-    def __set_pieces_score(self):
-        pieces_score = {}
+    def __set_pieces_hits(self):
+        pieces_hits = {}
         piece_move_found = False
 
         for piece in self.pieces:
             for piece_move in piece.moves:
                 if piece_move == self.pos:
-                    pieces_score[piece] = 1
+                    pieces_hits[piece] = 1
                     piece_move_found = True
             if not piece_move_found:
-                pieces_score[piece] = 0
+                pieces_hits[piece] = 0
             piece_move_found = False
 
-        return pieces_score
+        return pieces_hits
 
 
     def get_path(self):
@@ -77,17 +77,17 @@ class State:
             parent_node = parent_node.parent_node
         return path
 
-    def get_pieces_score(self):
-        pieces_score = self.pieces_score
-        scores = [0] * len(pieces_score)
+    def get_pieces_hits(self):
+        pieces_hits = self.pieces_hits
+        hits = [0] * len(pieces_hits)
         parent_node = self.parent_node
 
         while parent_node != None:
             i = 0
             for piece in self.pieces:
-                scores[i] += pieces_score[piece]
+                hits[i] += pieces_hits[piece]
                 i += 1
-            pieces_score = parent_node.pieces_score
+            pieces_hits = parent_node.pieces_hits
             parent_node = parent_node.parent_node
-            
-        return scores
+
+        return hits

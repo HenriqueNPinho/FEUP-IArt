@@ -89,58 +89,55 @@ def valid(board, pieces, moves):
     return True
 
 def is_valid(path):
-    for i in range(0, len(path)):
-        for j in range(0, i):
-            if i == j:
-                continue
-            (x,y,d) = path[i]
-            (w,z,_) = path[j]
-            if (x,y) == (w,z):
+    (x,y,d) = path[len(path)-1]
+    for j in range(0, len(path)-1):
+        (w,z,_) = path[j]
+        if (x,y) == (w,z):
+            return False
+        if d == 'R':
+            if (x,y+1) == (w,z):
                 return False
-            if d == 'R':
-                if (x,y+1) == (w,z):
-                    return False
-                if (x,y-1) == (w,z):
-                    return False
-                if (x+1,y) == (w,z):
-                    return False
-                if (x+1,y-1) == (w,z):
-                    return False
-                if (x+1,y+1) == (w,z):
-                    return False
-            elif d == 'L':
-                if (x,y-1) == (w,z):
-                    return False
-                if (x,y+1) == (w,z):
-                    return False
-                if (x-1,y) == (w,z):
-                    return False
-                if (x-1,y-1) == (w,z):
-                    return False
-                if (x-1,y+1) == (w,z):
-                    return False
-            elif d == 'U':
-                if (x+1,y) == (w,z):
-                    return False
-                if (x-1,y) == (w,z):
-                    return False
-                if (x,y-1) == (w,z):
-                    return False
-                if (x+1,y-1) == (w,z):
-                    return False
-                if (x-1,y-1) == (w,z):
-                    return False
-            elif d == 'D':
-                if (x+1,y) == (w,z):
-                    return False
-                if (x-1,y) == (w,z):
-                    return False
-                if (x-1,y+1) == (w,z):
-                    return False
-                if (x+1,y+1) == (w,z):
-                    return False
-                if (x,y+1) == (w,z):
-                    return False
+            if (x,y-1) == (w,z):
+                return False
+            if (x+1,y) == (w,z):
+                return False
+            if (x+1,y-1) == (w,z):
+                return False
+            if (x+1,y+1) == (w,z):
+                return False
+        elif d == 'L':
+            if (x,y-1) == (w,z):
+                return False
+            if (x,y+1) == (w,z):
+                return False
+            if (x-1,y) == (w,z):
+                return False
+            if (x-1,y-1) == (w,z):
+                return False
+            if (x-1,y+1) == (w,z):
+                return False
+        elif d == 'U':
+            if (x+1,y) == (w,z):
+                return False
+            if (x-1,y) == (w,z):
+                return False
+            if (x,y-1) == (w,z):
+                return False
+            if (x+1,y-1) == (w,z):
+                return False
+            if (x-1,y-1) == (w,z):
+                return False
+        elif d == 'D':
+            if (x+1,y) == (w,z):
+                return False
+            if (x-1,y) == (w,z):
+                return False
+            if (x-1,y+1) == (w,z):
+                return False
+            if (x+1,y+1) == (w,z):
+                return False
+            if (x,y+1) == (w,z):
+                return False
     return True
 
 def remove_more_moves(board, piece, pos):
@@ -171,16 +168,15 @@ def bfs_state(initial_state):
     states = Queue()
     states.put(initial_state)
     current_state = initial_state
-    i = 1
+    
     while not end_state(current_state):
         current_state = states.get()
         for d in ['L', 'R', 'U', 'D']:
             new_state = current_state.move(d)
             if valid_state(new_state):
                 states.put(new_state)
-        i += 1
     
-    print(states.qsize(),i,new_state.depth,new_state.get_path())
+    print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
 
 def valid_state(state):
     (x, y) = state.pos
@@ -212,16 +208,16 @@ def end_state(state):
     if state.pos != final_pos:
         return False
 
-    if not check_final_score(state):
+    if not check_final_hits(state):
         return False
 
     print()
 
     return True
 
-def check_final_score(state):
-    scores = state.get_pieces_score()
-    return all(score == scores[0] for score in scores)
+def check_final_hits(state):
+    hits = state.get_pieces_hits()
+    return all(hit == hits[0] for hit in hits)
 
 
 
