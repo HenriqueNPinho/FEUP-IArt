@@ -1,7 +1,7 @@
 import pygame
 
 class Rook:
-    def __init__(self, pos, board_size):
+    def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'R'
@@ -36,7 +36,7 @@ class Rook:
 
 
 class Bishop:
-    def __init__(self, pos, board_size):
+    def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'B'
@@ -73,7 +73,7 @@ class Bishop:
 
 
 class King:
-    def __init__(self, pos, board_size):
+    def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'K'
@@ -113,7 +113,7 @@ class King:
 
 
 class Queen:
-    def __init__(self, pos, board_size):
+    def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'Q'
@@ -161,7 +161,7 @@ class Queen:
 
 
 class Knight:
-    def __init__(self, pos, board_size):
+    def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'C'
