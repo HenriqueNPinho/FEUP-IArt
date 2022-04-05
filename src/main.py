@@ -3,8 +3,47 @@ from queue import Queue
 from state import *
 import numpy as np
 
+
 board_size = 6
 board = [[' ']*board_size for _ in range(board_size)]
+
+def get_human_move(pos):
+    move='N'
+    while move not in pos:
+        print("available moves: ")
+        print(pos)
+        move=input("Select ur move: ")
+    return move
+    
+
+def human(initial_state):
+    states = Queue()
+    states.put(initial_state)
+    current_state = initial_state
+
+    
+    path_s = ''
+
+    while current_state.pos != (len(board)-1, 0):
+
+        valid_pos=[]
+        for d in ['L', 'R', 'U', 'D']:
+            new_state = current_state.move(d)
+            if valid_state(new_state):
+                valid_pos.append(new_state.dir)
+
+        draw_board(board, current_state.pieces, path_s)
+
+        move=get_human_move(valid_pos)
+
+        current_state=current_state.move(move)
+
+        path = current_state.get_path()
+        path_s =''
+        for pos in path:
+            (_,_,d) = pos
+            if d != 'S':
+                path_s += d
 
 def main():
 
@@ -30,9 +69,14 @@ def main():
 
     initial_state = State(initial_pos,board, pieces)
 
-    draw_board(board, pieces)
+    aux=input("1 for Human, 0 for PC: ")
 
-    bfs_state(initial_state)
+    
+    if(aux==0):
+     draw_board(board, pieces)
+     bfs_state(initial_state)
+    else: 
+     human(initial_state)
 
 def draw_board(board, pieces, moves=""):
     x = 0
