@@ -160,14 +160,6 @@ def bfs_state(initial_state):
             new_state = current_state.move(d)
             if valid_state(new_state):
                 states.put(new_state)
-    
-    path = current_state.get_path()
-    path_s = ''
-
-    for pos in path:
-        (_,_,d) = pos
-        if d != 'S':
-            path_s += d
 
     draw_board(current_state)
 
