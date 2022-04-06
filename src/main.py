@@ -21,9 +21,6 @@ def human(initial_state):
     states.put(initial_state)
     current_state = initial_state
 
-    
-    path_s = ''
-
     while current_state.pos != (len(board)-1, 0):
 
         valid_pos=[]
@@ -32,18 +29,12 @@ def human(initial_state):
             if valid_state(new_state):
                 valid_pos.append(new_state.dir)
 
-        draw_board(board, current_state.pieces, path_s)
+        draw_board(current_state)
 
         move=get_human_move(valid_pos)
 
         current_state=current_state.move(move)
 
-        path = current_state.get_path()
-        path_s =''
-        for pos in path:
-            (_,_,d) = pos
-            if d != 'S':
-                path_s += d
 
 def main():
 
@@ -73,26 +64,23 @@ def main():
 
     
     if aux == '0':
-        draw_board(board, pieces)
+        draw_board(initial_state)
         bfs_state(initial_state)
     else: 
         human(initial_state)
 
-def draw_board(board, pieces, moves=''):
-    x = 0
-    y = len(board)-1
-    pos = set()
-    pos.add((x,y))
-    for move in moves:
-        if move == 'U':
-            y-=1
-        if move == 'D':
-            y+=1
-        if move == 'R':
-            x+=1
-        if move == 'L':
-            x-=1
-        pos.add((x,y))
+
+def draw_board(state):
+    board = state.board
+    pieces = state.pieces
+    path = state.get_path()
+
+    pos = []
+
+    for p in path:
+        (a,b,_) = p
+        pos.append((a,b))
+
     print('___'*board_size)
     for x, row in enumerate(board):
         print('|',end='')
@@ -108,8 +96,9 @@ def draw_board(board, pieces, moves=''):
         print()
         print('---'*board_size)
 
+
 def is_valid(path):
-    (x,y,d) = path[len(path)-1]
+    (x,y,d) = path[-1]
     for j in range(0, len(path)-1):
         (w,z,_) = path[j]
         if (x,y) == (w,z):
@@ -171,7 +160,6 @@ def bfs_state(initial_state):
             new_state = current_state.move(d)
             if valid_state(new_state):
                 states.put(new_state)
-
     
     path = current_state.get_path()
     path_s = ''
@@ -181,7 +169,7 @@ def bfs_state(initial_state):
         if d != 'S':
             path_s += d
 
-    draw_board(board, current_state.pieces, path_s)
+    draw_board(current_state)
 
     print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
 
@@ -207,14 +195,14 @@ def end_state(state):
     if state.pos != final_pos:
         return False
 
-    if not check_final_hits(state):
+    if not equal_final_hits(state):
         return False
 
     print()
 
     return True
 
-def check_final_hits(state):
+def equal_final_hits(state):
     hits = state.get_pieces_hits()
     return all(hit == hits[0] for hit in hits)
 

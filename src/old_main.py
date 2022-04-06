@@ -22,6 +22,37 @@ def same_score(pieces):
     return all(score == scores[0] for score in scores)
 
 
+def draw_board(board, pieces, moves=''):
+    x = 0
+    y = len(board)-1
+    pos = set()
+    pos.add((x,y))
+    for move in moves:
+        if move == 'U':
+            y-=1
+        if move == 'D':
+            y+=1
+        if move == 'R':
+            x+=1
+        if move == 'L':
+            x-=1
+        pos.add((x,y))
+    print('___'*board_size)
+    for x, row in enumerate(board):
+        print('|',end='')
+        for y, col in enumerate(row):
+            if (y,x) in pos:
+                print('+ ', end='')
+            else:
+                for piece in pieces:
+                    if piece.pos == (y,x):
+                        col = piece.symbol
+                print(col + ' ', end='')
+            print('|',end='')
+        print()
+        print('---'*board_size)
+
+
 
 def valid(board, pieces, moves):
     x = 0
