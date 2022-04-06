@@ -65,6 +65,7 @@ def main():
     
     if aux == '0':
         draw_board(initial_state)
+        print()
         bfs_state(initial_state)
     else: 
         human(initial_state)
@@ -112,58 +113,6 @@ def draw_board(state):
         print('---'*board_size)
 
 
-def is_valid(path):
-    (x,y,d) = path[-1]
-    for j in range(0, len(path)-1):
-        (w,z,_) = path[j]
-        if (x,y) == (w,z):
-            return False
-        if d == 'R':
-            if (x,y+1) == (w,z):
-                return False
-            if (x,y-1) == (w,z):
-                return False
-            if (x+1,y) == (w,z):
-                return False
-            if (x+1,y-1) == (w,z):
-                return False
-            if (x+1,y+1) == (w,z):
-                return False
-        elif d == 'L':
-            if (x,y-1) == (w,z):
-                return False
-            if (x,y+1) == (w,z):
-                return False
-            if (x-1,y) == (w,z):
-                return False
-            if (x-1,y-1) == (w,z):
-                return False
-            if (x-1,y+1) == (w,z):
-                return False
-        elif d == 'U':
-            if (x+1,y) == (w,z):
-                return False
-            if (x-1,y) == (w,z):
-                return False
-            if (x,y-1) == (w,z):
-                return False
-            if (x+1,y-1) == (w,z):
-                return False
-            if (x-1,y-1) == (w,z):
-                return False
-        elif d == 'D':
-            if (x+1,y) == (w,z):
-                return False
-            if (x-1,y) == (w,z):
-                return False
-            if (x-1,y+1) == (w,z):
-                return False
-            if (x+1,y+1) == (w,z):
-                return False
-            if (x,y+1) == (w,z):
-                return False
-    return True
-
 def bfs_state(initial_state):
     states = Queue()
     states.put(initial_state)
@@ -180,6 +129,7 @@ def bfs_state(initial_state):
 
     print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
 
+
 def valid_state(state):
     (x, y) = state.pos
     board = state.board
@@ -195,8 +145,29 @@ def valid_state(state):
     return is_valid(state.get_path())
 
 
-def end_state(state):
+def is_valid(path):
+    (x,y,d) = path[-1]
 
+    for i in range(0, len(path)-1):
+        (a,b,_) = path[i]
+
+        if (x,y) == (a,b):
+            return False
+        if d == 'R':
+            if (a, b) in [(x, y+1), (x, y-1), (x+1, y), (x+1, y-1), (x+1, y+1)]:
+                return False
+        elif d == 'L':
+            if (a, b) in [(x, y-1), (x, y+1), (x-1, y), (x-1, y-1), (x-1, y+1)]:
+                return False
+        elif d == 'U':
+            if (a, b) in [(x+1, y), (x-1, y), (x, y-1), (x+1, y-1), (x-1, y-1)]:
+                return False
+        elif d == 'D':
+            if (a, b) in [(x+1, y), (x-1, y), (x-1, y+1), (x+1, y+1), (x, y+1)]:
+                return False
+    return True
+
+def end_state(state):
     final_pos = (len(state.board) - 1, 0)
 
     if state.pos != final_pos:
@@ -204,8 +175,6 @@ def end_state(state):
 
     if not equal_final_hits(state):
         return False
-
-    print()
 
     return True
 
