@@ -25,15 +25,15 @@ def human(initial_state):
 
         valid_pos=[]
         for d in ['L', 'R', 'U', 'D']:
-            new_state = current_state.move(d)
+            new_state = move(current_state, d)
             if valid_state(new_state):
                 valid_pos.append(new_state.dir)
 
         draw_board(current_state)
 
-        move=get_human_move(valid_pos)
+        dir = get_human_move(valid_pos)
 
-        current_state=current_state.move(move)
+        current_state = move(current_state, dir)
 
 
 def main():
@@ -70,10 +70,25 @@ def main():
         human(initial_state)
 
 
+def move(state, dir):
+    current_pos = state.pos
+    if dir == 'U':
+        next_pos = (current_pos[0], current_pos[1] - 1)
+    elif dir == 'D':
+        next_pos = (current_pos[0], current_pos[1] + 1)
+    elif dir == 'L':
+        next_pos = (current_pos[0] - 1, current_pos[1])
+    elif dir == 'R':
+        next_pos = (current_pos[0] + 1, current_pos[1])
+
+    return State(next_pos, state.board, state.pieces, dir, state, state.depth + 1)
+
+
 def draw_board(state):
     board = state.board
     pieces = state.pieces
     path = state.get_path()
+    board_size = len(board)
 
     pos = []
 
@@ -157,7 +172,7 @@ def bfs_state(initial_state):
     while not end_state(current_state):
         current_state = states.get()
         for d in ['L', 'R', 'U', 'D']:
-            new_state = current_state.move(d)
+            new_state = move(current_state, d)
             if valid_state(new_state):
                 states.put(new_state)
 
