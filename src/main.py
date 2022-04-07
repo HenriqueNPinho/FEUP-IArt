@@ -20,9 +20,10 @@ def human(initial_state):
     states = Queue()
     states.put(initial_state)
     current_state = initial_state
+    objective_state=bfs_state(initial_state)
 
-    while current_state.pos != (len(board)-1, 0):
     
+    while current_state.get_path() != objective_state.get_path():
         valid_pos=[]
         for d in ['L', 'R', 'U', 'D']:
             new_state = move(current_state, d)
@@ -30,10 +31,15 @@ def human(initial_state):
                 valid_pos.append(new_state.dir)
 
         draw_board(current_state)
-
+        if current_state.pos == (len(board)-1, 0):
+            print("Solution: ", objective_state.pieces_hits)
+            print("Your play: ", current_state.pieces_hits)
         dir = get_human_move(valid_pos)
 
         current_state = move(current_state, dir)
+
+    print("You Won \n")
+    main()
 
 
 def main():
@@ -128,6 +134,7 @@ def bfs_state(initial_state):
     draw_board(current_state)
 
     print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
+    return current_state
 
 
 def valid_state(state):
