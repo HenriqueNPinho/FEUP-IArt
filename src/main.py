@@ -22,7 +22,7 @@ def human(initial_state):
     current_state = initial_state
 
     while current_state.pos != (len(board)-1, 0):
-
+    
         valid_pos=[]
         for d in ['L', 'R', 'U', 'D']:
             new_state = move(current_state, d)
