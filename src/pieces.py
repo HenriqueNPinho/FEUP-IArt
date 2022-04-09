@@ -165,7 +165,7 @@ class Knight:
     def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
-        self.symbol = 'C'
+        self.symbol = 'H'
         self.score = 0
 
     def __set_moves(self, board_size):

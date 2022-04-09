@@ -2,59 +2,20 @@ from pieces import *
 from queue import Queue
 from state import *
 import numpy as np
-
-
-board_size = 6
-board = [[' ']*board_size for _ in range(board_size)]
-
-def get_human_move(pos):
-    move='N'
-    while move not in pos:
-        print("available moves: ")
-        print(pos)
-        move=input("Select ur move: ")
-    return move
-    
-
-def human(initial_state):
-    states = Queue()
-    states.put(initial_state)
-    current_state = initial_state
-
-    while current_state.pos != (len(board)-1, 0):
-
-        valid_pos=[]
-        for d in ['L', 'R', 'U', 'D']:
-            new_state = move(current_state, d)
-            if valid_state(new_state):
-                valid_pos.append(new_state.dir)
-
-        draw_board(current_state)
-
-        dir = get_human_move(valid_pos)
-
-        current_state = move(current_state, dir)
-
+from file import *
+import human
+from board import draw_board
+import sys
 
 def main():
-
-    rook = Rook((2, 4), board_size)
-    bishop = Bishop((4, 1), board_size)
-    king = King((3, 4), board_size)
-    queen = Queen((1, 1), board_size)
-    knight = Knight((2, 4), board_size)
-
-    pieces = [bishop,queen,king]
-    
-    for piece in pieces:
-        print(piece, piece.moves)
-
-    print()
+    if len(sys.argv) < 2:
+        print('USAGE > python3 main.py <lvl>')
+        return
+        
+    (board_size, pieces) = get_level(sys.argv[1])
+    board = [[' ']*board_size for _ in range(board_size)]
 
     remove_pieces_moves(pieces, board_size)
-
-    for piece in pieces:
-        print(piece, piece.moves)
 
     initial_pos = (0, board_size - 1)
 
@@ -66,12 +27,12 @@ def main():
     if aux == '0':
         draw_board(initial_state)
         print()
-        bfs_state(initial_state)
+        bfs(initial_state)
     else: 
-        human(initial_state)
+        human.human(initial_state)
 
 
-def move(state, dir):
+def get_new_state(state, dir):
     current_pos = state.pos
     if dir == 'U':
         next_pos = (current_pos[0], current_pos[1] - 1)
@@ -85,43 +46,14 @@ def move(state, dir):
     return State(next_pos, state.board, state.pieces, dir, state, state.depth + 1)
 
 
-def draw_board(state):
-    board = state.board
-    pieces = state.pieces
-    path = state.get_path()
-    board_size = len(board)
-
-    pos = []
-
-    for p in path:
-        (a,b,_) = p
-        pos.append((a,b))
-
-    print('___'*board_size)
-    for x, row in enumerate(board):
-        print('|',end='')
-        for y, col in enumerate(row):
-            if (y,x) in pos:
-                print('+ ', end='')
-            else:
-                for piece in pieces:
-                    if piece.pos == (y,x):
-                        col = piece.symbol
-                print(col + ' ', end='')
-            print('|',end='')
-        print()
-        print('---'*board_size)
-
-
-def bfs_state(initial_state):
+def bfs(current_state):
     states = Queue()
-    states.put(initial_state)
-    current_state = initial_state
+    states.put(current_state)
     
     while not end_state(current_state):
         current_state = states.get()
-        for d in ['L', 'R', 'U', 'D']:
-            new_state = move(current_state, d)
+        for dir in 'LRUD':
+            new_state = get_new_state(current_state, dir)
             if valid_state(new_state):
                 states.put(new_state)
 
@@ -173,10 +105,8 @@ def end_state(state):
     if state.pos != final_pos:
         return False
 
-    if not equal_final_hits(state):
-        return False
-
-    return True
+    return equal_final_hits(state)
+       
 
 def equal_final_hits(state):
     hits = state.get_pieces_hits()
@@ -185,4 +115,3 @@ def equal_final_hits(state):
 
 if __name__ == "__main__":
     main()
-
