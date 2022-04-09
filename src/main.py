@@ -60,6 +60,7 @@ def bfs(current_state):
     draw_board(current_state)
 
     print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
+    return current_state
 
 
 def valid_state(state):
