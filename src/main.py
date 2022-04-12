@@ -6,6 +6,7 @@ from file import *
 import human
 from board import draw_board
 import sys
+from time import time
 
 def main():
     if len(sys.argv) < 2:
@@ -27,6 +28,7 @@ def main():
     if aux == '0':
         draw_board(initial_state)
         print()
+        #dfs(initial_state)
         bfs(initial_state)
     else: 
         human.human(initial_state)
@@ -49,17 +51,58 @@ def get_new_state(state, dir):
 def bfs(current_state):
     states = Queue()
     states.put(current_state)
-    
+    bfs_start = time()
     while not end_state(current_state):
         current_state = states.get()
         for dir in 'LRUD':
             new_state = get_new_state(current_state, dir)
             if valid_state(new_state):
                 states.put(new_state)
-
+    bfs_end = time()
+    
     draw_board(current_state)
-
+    print(f'BFS Time: {bfs_end - bfs_start}')
     print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
+    return current_state
+
+def bfs_test(current_state):
+    states = Queue()
+    states.put(current_state)
+    bfs_start = time()
+    i=0
+    while True:
+        if end_state(current_state):
+            print('end')
+            i +=1
+            if i > 1:
+                break
+        current_state = states.get()
+        for dir in 'LRUD':
+            new_state = get_new_state(current_state, dir)
+            if valid_state(new_state):
+                states.put(new_state)
+    bfs_end = time()
+    
+    draw_board(current_state)
+    print(f'BFS Time: {bfs_end - bfs_start}')
+    print('States: ', states.qsize(), 'Depth: ', current_state.depth, 'Solution: ',current_state.get_path(), sep='\n')
+    return current_state
+
+def dfs(current_state):
+    states = [current_state]
+
+    dfs_start = time()
+    while not end_state(current_state):
+        current_state = states.pop()
+        for dir in 'LRUD':
+            new_state = get_new_state(current_state, dir)
+            if valid_state(new_state):
+                states.append(new_state)
+    dfs_end = time()
+    
+    draw_board(current_state)
+    print(f'DFS Time: {dfs_end - dfs_start}')
+    print('Solution: ', current_state.get_path(), sep='\n')
     return current_state
 
 

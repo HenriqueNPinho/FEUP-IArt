@@ -6,7 +6,6 @@ class Rook:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'R'
-        self.score = 0
     
     def __set_moves(self, board_size):
         moves = []
@@ -41,7 +40,6 @@ class Bishop:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'B'
-        self.score = 0
 
     def __set_moves(self, board_size):
         moves = []
@@ -78,7 +76,6 @@ class King:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'K'
-        self.score = 0
 
     def __set_moves(self, board_size):
         moves = []
@@ -118,7 +115,6 @@ class Queen:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'Q'
-        self.score = 0
 
     def __set_moves(self, board_size):
         moves = []
@@ -166,7 +162,6 @@ class Knight:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'H'
-        self.score = 0
 
     def __set_moves(self, board_size):
         moves = []
