@@ -11,6 +11,7 @@ def get_human_move(pos):
     
 
 def human(initial_state):
+    
     states = Queue()
     states.put(initial_state)
     current_state = initial_state
@@ -19,11 +20,12 @@ def human(initial_state):
     
     while current_state.get_path() != objective_state.get_path():
         valid_pos=[]
+        
         for d in ['L', 'R', 'U', 'D']:
             new_state = get_new_state(current_state, d)
             if valid_state(new_state):
                 valid_pos.append(new_state.dir)
-
+        
         draw_board(current_state)
         if current_state.pos == (len(board)-1, 0):
             print("Solution: ", objective_state.pieces_hits)

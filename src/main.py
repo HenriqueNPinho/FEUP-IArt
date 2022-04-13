@@ -54,6 +54,7 @@ def bfs(current_state):
     state_expanded = False
     states_expanded = 0
     max_states = 0
+    
     bfs_start = time()
     while not end_state(current_state):
         current_state = states.get()
@@ -64,7 +65,7 @@ def bfs(current_state):
                 state_expanded = True
                 states.put(new_state)
         print(max_states)
-        input()
+        ##input()
         if state_expanded:
             states_expanded += 1
             state_expanded = False
