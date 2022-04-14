@@ -64,8 +64,6 @@ def bfs(current_state):
                 max_states += 1
                 state_expanded = True
                 states.put(new_state)
-        print(max_states)
-        ##input()
         if state_expanded:
             states_expanded += 1
             state_expanded = False
