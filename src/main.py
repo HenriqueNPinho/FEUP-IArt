@@ -1,5 +1,6 @@
+from threading import currentThread
 from pieces import *
-from queue import Queue
+from queue import PriorityQueue, Queue
 from state import *
 import numpy as np
 from file import *
@@ -29,7 +30,8 @@ def main():
         draw_board(initial_state)
         print()
         #dfs(initial_state)
-        bfs(initial_state)
+        #bfs(initial_state)
+        a_star(initial_state)
     else: 
         human.human(initial_state)
 
@@ -126,6 +128,28 @@ def dfs(current_state):
     print('Solution: ', current_state.get_path(), sep='\n')
     return current_state
 
+def a_star(current_state):
+    visited_states = set()
+    states = PriorityQueue()
+    states.put(current_state)
+    
+    a_star_start = time()
+    while not end_state(current_state):
+        current_state = states.get()
+        
+        if current_state in visited_states:
+            continue
+
+        for dir in 'LRUD':
+            new_state = get_new_state(current_state, dir)
+            if valid_state(new_state):
+                states.put(new_state)
+
+        visited_states.add(current_state)
+
+    a_star_end = time()
+    print(f'Time: {a_star_end-a_star_start}')
+    draw_board(current_state)
 
 def valid_state(state):
     (x, y) = state.pos

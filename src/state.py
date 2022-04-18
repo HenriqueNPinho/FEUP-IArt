@@ -1,3 +1,6 @@
+import heuristics
+
+
 class State:
     def __init__(self, pos, board, pieces, dir = 'S', parent_node = None, depth = 0):
         self.pos = pos
@@ -7,6 +10,7 @@ class State:
         self.depth = depth
         self.pieces = pieces
         self.pieces_hits = self.__set_hits()
+        self.cost = self.__set_cost()
 
 
     def get_path(self):
@@ -46,4 +50,12 @@ class State:
 
         return pieces_hits
 
+    def __set_cost(self):
+        manhattan = heuristics.manhattan(self.pos, (len(self.board)-1,0))
+        n_hits = heuristics.n_hits(self)
 
+        return n_hits+manhattan
+
+
+    def __lt__(self, other):
+        return self.cost < other.cost
