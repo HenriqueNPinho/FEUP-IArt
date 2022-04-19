@@ -1,5 +1,4 @@
 import pygame
-import pieces 
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -23,10 +22,10 @@ def draw_board(screen, size):
     draw_lines(screen)
     draw_cols(screen)
     c=(size/2, 720-(size/2))
-    S_TEXT = get_font(120).render("S", True, "Black")
+    S_TEXT = get_font(size-20).render("S", True, "Black")
     S_RECT = S_TEXT.get_rect(center=c)
     screen.blit(S_TEXT, S_RECT)
-    F_TEXT = get_font(120).render("F", True, "Black")
+    F_TEXT = get_font(size-20).render("F", True, "Black")
     F_RECT = F_TEXT.get_rect(center=Reverse(c))
     screen.blit(F_TEXT, F_RECT)
 
