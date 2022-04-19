@@ -1,8 +1,6 @@
-
 from pieces import *
 
 def get_level(lvl):
-    print(lvl)
     f = open('puzzles/'+lvl, 'r')
     board_size = int(f.readline())
     pieces = []

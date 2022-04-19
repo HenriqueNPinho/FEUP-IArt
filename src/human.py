@@ -1,13 +1,29 @@
 from queue import Queue
-from gui import main, bfs, get_new_state, valid_state, draw_board
+from time import time
+from board import draw_board
+import main
+from operators import *
+import search
+
+keys = {
+    'w':'U',
+    'a':'L',
+    's':'D',
+    'd':'R'
+}
 
 def get_human_move(pos):
     move=''
+
     while move.upper() not in pos:
-        print(f"Available moves: ", pos)
-        move=input("Select your move: ")
-        if move == 'b':
-            return move.upper()
+        print("Available moves: ", pos)
+        i = input("Select your move: ")
+        
+        if i == 'b':
+            return i.upper()
+        else:
+            move = keys.get(i, '')
+
     return move.upper()
     
 
@@ -16,13 +32,13 @@ def human(initial_state):
     states = Queue()
     states.put(initial_state)
     current_state = initial_state
-    objective_state=bfs(initial_state)
+    objective_state = search.bfs(initial_state)
     board = initial_state.board
     n_moves = 0
-
     
+    start = time()
     while current_state.get_path() != objective_state.get_path():
-        valid_pos=[]
+        valid_pos = []
         
         for d in ['L', 'R', 'U', 'D']:
             new_state = get_new_state(current_state, d)
@@ -44,6 +60,12 @@ def human(initial_state):
             current_state = get_new_state(current_state, dir)
 
         n_moves += 1
+    end = time()
 
-    print("You Won \n")
-    main()
+    draw_board(current_state)
+
+    print("\nYou Won")
+    print(f'Number of moves: {n_moves}')
+    print(f'Time spent: {end - start}')
+
+    main.menu(initial_state)
