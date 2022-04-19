@@ -1,22 +1,28 @@
 import pygame, sys
-from src.levels import *
-from src.button import Button
-from src.draw import draw_big_board, draw_small_board
-from src.pieces import *
+from file import get_level
+from button import Button
+from draw import *
+from pieces import *
+
 
 pygame.init()
 clock = pygame.time.Clock()
 
 SCREEN = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Chess Snake Puzzles")
-pygame.display.set_icon(pygame.image.load("pieces/king.png"))
-BG = pygame.image.load("assets/Background.png") #mudar imagem
+pygame.display.set_icon(pygame.image.load("../pieces/king.png"))
+BG = pygame.image.load("../assets/Background.png") #mudar imagem
 i=1
 
 def get_font(size):
-    return pygame.font.Font("assets/font.ttf", size)
+    return pygame.font.Font("../assets/font.ttf", size)
 
 def play():
+    PLAY_BACK = Button(image=None, pos=(1000, 660), 
+                            text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
+
+    (board_size, pieces)= get_level('lvl'+str(i))
+    
 
     playing=True
     while(playing):
@@ -25,29 +31,29 @@ def play():
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("White")
-        SCREEN.blit(BG, (720, 0))
+        SCREEN.blit(BG, (720, 0))  
 
-        lvl_select(SCREEN, i)
-       
+        draw_board(SCREEN, int(720/board_size))
+        draw_pieces(SCREEN, int(720/board_size), pieces)
 
-        PLAY_BACK = Button(image=None, pos=(1000, 660), 
-                            text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
         for button in [PLAY_BACK]:
             button.changeColor(PLAY_MOUSE_POS)
             button.update(SCREEN)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    reset_board()
                     choose_lvl()
                     playing=False
         pygame.display.update()
 
 
 def show_lvl():
-    lvl_img = pygame.image.load("lvls/"+str(i)+".png")
+    lvl_img = pygame.image.load("../lvls/"+str(i)+".png")
     lvl_img = pygame.transform.scale(lvl_img, (350,350))
     SCREEN.blit(lvl_img, (470, 100))
 
@@ -137,11 +143,11 @@ def main_menu():
         MENU_TEXT = get_font(150).render("MAIN   MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250), 
+        PLAY_BUTTON = Button(image=pygame.image.load("../assets/Play Rect.png"), pos=(640, 250), 
                             text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
+        OPTIONS_BUTTON = Button(image=pygame.image.load("../assets/Options Rect.png"), pos=(640, 400), 
                             text_input="Game Rules", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550), 
+        QUIT_BUTTON = Button(image=pygame.image.load("../assets/Quit Rect.png"), pos=(640, 550), 
                             text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)

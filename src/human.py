@@ -1,5 +1,5 @@
 from queue import Queue
-from main import main, bfs, get_new_state, valid_state, draw_board
+from gui import main, bfs, get_new_state, valid_state, draw_board
 
 def get_human_move(pos):
     move=''

@@ -1,11 +1,13 @@
 import pygame
 import numpy as np
 
+
 class Rook:
     def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'R'
+        self.image = "../pieces/rook.png"
     
     def __set_moves(self, board_size):
         moves = []
@@ -25,14 +27,7 @@ class Rook:
                         moves.append((row, col))
                         break
         return moves
-    
-    def draw(self,SCREEN, lvl):
-         piece = pygame.image.load("pieces/rook.png")
-         if lvl<=10:
-             piece = pygame.transform.scale(piece, (144,144))
-         else:
-             piece = pygame.transform.scale(piece, (120,120))
-         pygame.Surface.blit(SCREEN, piece, self.pos)
+
 
 
 class Bishop:
@@ -40,6 +35,7 @@ class Bishop:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'B'
+        self.image = "../pieces/bishop.png"
 
     def __set_moves(self, board_size):
         moves = []
@@ -60,14 +56,6 @@ class Bishop:
                         break
         return moves
 
-    def draw(self,SCREEN, lvl):
-         piece = pygame.image.load("pieces/bishop.png")
-         if lvl<=10:
-             piece = pygame.transform.scale(piece, (144,144))
-         else:
-             piece = pygame.transform.scale(piece, (120,120))
-         pygame.Surface.blit(SCREEN, piece, self.pos)
-
 
 
 
@@ -76,6 +64,7 @@ class King:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'K'
+        self.image = "../pieces/king.png"
 
     def __set_moves(self, board_size):
         moves = []
@@ -100,13 +89,6 @@ class King:
 
         return moves
 
-    def draw(self,SCREEN, lvl):
-         piece = pygame.image.load("pieces/king.png")
-         if lvl<=10:
-             piece = pygame.transform.scale(piece, (144,144))
-         else:
-             piece = pygame.transform.scale(piece, (120,120))
-         pygame.Surface.blit(SCREEN, piece, self.pos)
 
 
 
@@ -115,6 +97,7 @@ class Queen:
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'Q'
+        self.image = "../pieces/queen.png"
 
     def __set_moves(self, board_size):
         moves = []
@@ -148,20 +131,12 @@ class Queen:
 
         return moves
 
-    def draw(self,SCREEN, lvl):
-         piece = pygame.image.load("pieces/queen.png")
-         if lvl<=10:
-             piece = pygame.transform.scale(piece, (144,144))
-         else:
-             piece = pygame.transform.scale(piece, (120,120))
-         pygame.Surface.blit(SCREEN, piece, self.pos)
-
-
 class Knight:
     def __init__(self, pos, board_size=0):
         self.pos = pos
         self.moves = self.__set_moves(board_size)
         self.symbol = 'H'
+        self.image = "../pieces/knight.png"
 
     def __set_moves(self, board_size):
         moves = []
@@ -186,13 +161,7 @@ class Knight:
 
         return moves
     
-    def draw(self,SCREEN, lvl):
-         piece = pygame.image.load("pieces/knight.png")
-         if lvl<=10:
-             piece = pygame.transform.scale(piece, (144,144))
-         else:
-             piece = pygame.transform.scale(piece, (120,120))
-         pygame.Surface.blit(SCREEN, piece, self.pos)
+
 
 
 
