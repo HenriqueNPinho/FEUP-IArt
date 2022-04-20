@@ -25,15 +25,23 @@ def main():
 
 def menu(initial_state):
     print('\nCHESS SNAKE PUZZLES\n')
+    draw_board(initial_state)
+    print('\n')
     print('1 - Player', '2 - CPU', '0 - Exit', sep='\n')
     aux = input('\n> ')
 
     if aux == '2':
-        draw_board(initial_state)
-        print()
-        #dfs(initial_state)
-        search.bfs(initial_state)
-        search.a_star(initial_state)
+        print('\nSearch Methods:\n')
+        print('1 - BFS', '2 - DFS', '3 - A*', sep='\n')
+        i = input('\n> ')
+        if i == '1':
+            search.bfs(initial_state)
+        elif i == '2':
+            search.dfs(initial_state)
+        elif i == '3':
+            search.a_star(initial_state)
+        else:
+            menu(initial_state)
     elif aux == '1': 
         human.human(initial_state)
     elif aux == '0':
