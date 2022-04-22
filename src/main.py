@@ -7,13 +7,13 @@ from file import *
 import human
 from board import draw_board
 import sys
+import performance
 
 def main():
     if len(sys.argv) == 2:
         (board_size, pieces) = get_level(sys.argv[1])
     if len(sys.argv) < 2:
-        puzzle = choose_puzzle()
-        (board_size, pieces) = get_level(puzzle)
+        (board_size, pieces) = get_level(choose_puzzle())
         
     init(board_size, pieces)
 
@@ -59,10 +59,28 @@ def menu(initial_state):
         print('=========================')
         draw_board(initial_state)
         print('\n')
-        print('1 - Player', '2 - CPU', '3 - Level', '0 - Exit', sep='\n')
+        print('1 - Player', '2 - CPU', '3 - Level', '4 - Performance Metrics', '0 - Exit', sep='\n')
         aux = input('\n> ')
 
-        if aux == '3':
+        if aux == '4':
+            bfs_start = time.time()
+            (final_state, max_states_bfs, states_expanded_bfs)  = search.bfs(initial_state)
+            bfs_end = time.time()
+            (final_state, max_states_dfs, states_expanded_dfs)  = search.dfs(initial_state)
+            dfs_end = time.time()
+            (final_state, max_states_a_star, states_expanded_a_star) = search.a_star(initial_state)
+            a_star_end = time.time()
+            
+            max_states = [max_states_bfs*sys.getsizeof(final_state)/1000, max_states_dfs*sys.getsizeof(final_state)/1000, max_states_a_star*sys.getsizeof(final_state)/1000]
+            times = [bfs_end - bfs_start, dfs_end - bfs_end, a_star_end - dfs_end]
+            states_expanded = [states_expanded_bfs, states_expanded_dfs, states_expanded_a_star]
+
+            performance.draw_chart_time(len(initial_state.board), times)
+            performance.draw_chart_max(len(initial_state.board), max_states)
+            performance.draw_chart_expanded(len(initial_state.board), states_expanded)
+
+
+        elif aux == '3':
             new_level = True
             break
         
@@ -94,8 +112,7 @@ def menu(initial_state):
             return
 
     if new_level:
-        puzzle = choose_puzzle()
-        (board_size, pieces) = get_level(puzzle)
+        (board_size, pieces) = get_level(choose_puzzle())
         init(board_size, pieces)
 
 

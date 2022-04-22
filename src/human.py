@@ -1,7 +1,6 @@
 from queue import Queue
 from time import time
 from board import draw_board
-import main
 from operators import *
 import search
 
