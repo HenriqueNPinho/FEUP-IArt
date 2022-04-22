@@ -20,6 +20,8 @@ def dfs(current_state):
         for dir in 'LRUD':
             new_state = get_new_state(current_state, dir)
             if valid_state(new_state):
+                if new_state in visited_states:
+                    continue
                 states.append(new_state)
                 max_states += 1
                 state_expanded = True
@@ -49,6 +51,8 @@ def a_star(current_state):
         for dir in 'LRUD':
             new_state = get_new_state(current_state, dir)
             if valid_state(new_state):
+                if new_state in visited_states:
+                    continue
                 max_states += 1
                 state_expanded = True
                 states.put(new_state)
@@ -79,6 +83,8 @@ def bfs(current_state):
         for dir in 'LRUD':
             new_state = get_new_state(current_state, dir)
             if valid_state(new_state):
+                if new_state in visited_states:
+                    continue
                 max_states += 1
                 state_expanded = True
                 states.put(new_state)

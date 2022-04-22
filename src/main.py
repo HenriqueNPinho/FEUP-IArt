@@ -87,7 +87,7 @@ def menu(initial_state):
         elif aux == '2':
             while True:
                 print('\nSearch Methods:\n')
-                print('1 - BFS (uninformed)', '2 - DFS (uninformed)', '3 - A* (informed)', sep='\n')
+                print('1 - BFS (uninformed)', '2 - DFS (uninformed)', '3 - A* (informed)', '0 - Back', sep='\n')
                 i = input('\n> ')
                 start = time.time()
                 if i == '1':
