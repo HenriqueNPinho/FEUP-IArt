@@ -104,7 +104,7 @@ def menu(initial_state):
                 print(f'Time: {end - start:.4f}s')
                 print(f'Nodes expanded: {states_expanded}')
                 print(f'Max Memory: {max_states*sys.getsizeof(final_state)/1000} KB')
-                print('Solution: ', final_state.get_path())
+                print('Solution: ', get_path_dir(final_state.get_path()[1:]))
 
         elif aux == '1': 
             human.human(initial_state)
@@ -114,6 +114,14 @@ def menu(initial_state):
     if new_level:
         (board_size, pieces) = get_level(choose_puzzle())
         init(board_size, pieces)
+
+
+def get_path_dir(path):
+    path_dir = ''
+    for p in path:
+        (_,_, d) = p
+        path_dir += d+' '
+    return path_dir
 
 
 if __name__ == "__main__":
