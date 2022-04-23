@@ -19,7 +19,7 @@ def human(initial_state):
     board = initial_state.board
     n_moves = 0
     won = True
-
+    hint = 0
     print('\nUse WASD to move the snake!\n')
     
     start = time()
@@ -46,6 +46,18 @@ def human(initial_state):
         if dir == 'B':
             if current_state.parent_node != None:
                 current_state = current_state.parent_node
+        elif dir == 'H':
+            print('\nHint:')
+            if hint == 0:
+                print('Number of moves: ' + str(len(objective_state.get_path())-1))
+                hint = 1
+            elif hint == 1:
+                print('Number of hits: ' + str(objective_state.get_pieces_hits()[0]))
+                hint = 2
+            else:
+                print('Number of moves: ' + str(len(objective_state.get_path())-1))
+                print('Number of hits: ' + str(objective_state.get_pieces_hits()[0]))
+            n_moves -= 1
         else:
             current_state = get_new_state(current_state, dir)
 
@@ -60,8 +72,6 @@ def human(initial_state):
         print(f'Number of moves: {n_moves}')
         print(f'Time spent: {end - start:.2f}')
         print(f'Score: {score:.2f}')
-    else:
-        return
 
 
 def get_human_move(pos):
@@ -72,6 +82,8 @@ def get_human_move(pos):
         i = input("Select your move: ")
         
         if i == 'b':
+            return i.upper()
+        if i == 'h':
             return i.upper()
         else:
             move = keys.get(i, '')

@@ -15,13 +15,13 @@ def main():
     if len(sys.argv) < 2:
         (board_size, pieces) = get_level(choose_puzzle())
         
-    init(board_size, pieces)
+    init(board_size, pieces) 
 
 
 def init(board_size, pieces):
     board = [[' ']*board_size for _ in range(board_size)]
 
-    remove_pieces_moves(pieces, board_size)
+    remove_pieces_moves(pieces, board_size) # remove not valid moves
 
     initial_pos = (0, board_size - 1)
 
@@ -96,6 +96,8 @@ def menu(initial_state):
                     (final_state, max_states, states_expanded)  = search.dfs(initial_state)
                 elif i == '3':
                     (final_state, max_states, states_expanded) = search.a_star(initial_state)
+                elif i == '4':
+                    (final_state, max_states, states_expanded) = search.a_star_test(initial_state)
                 else:
                     break
                 end = time.time()
