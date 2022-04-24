@@ -54,7 +54,7 @@ class State:
         manhattan = heuristics.manhattan(self.pos, (len(self.board)-1,0))
         n_hits = heuristics.n_hits(self)
 
-        return n_hits+manhattan
+        return n_hits
 
 
     def __lt__(self, other):

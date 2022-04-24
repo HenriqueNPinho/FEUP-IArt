@@ -1,4 +1,3 @@
-import pygame
 import numpy as np
 
 
@@ -174,7 +173,6 @@ def remove_pieces_moves(pieces, board_size):
                     continue
                 for move in piece.moves:
                     if move == pieces[j].pos:
-                        print(move)
                         pieces[i].moves.remove(move)
         else:
             remove_pieces_moves_aux(pieces, board_size)
