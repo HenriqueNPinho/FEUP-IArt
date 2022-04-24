@@ -3,6 +3,7 @@ from time import time
 from board import draw_board
 from operators import *
 import search
+from main import get_path_dir
 
 keys = {
     'w':'U',
@@ -20,7 +21,9 @@ def human(initial_state):
     n_moves = 0
     won = True
     hint = 0
-    print('\nUse WASD to move the snake!\n')
+    print('\nUse WASD to move the snake!')
+    print('Press B to undo the last move')
+    print('Press H for hints\n')
     
     start = time()
     while current_state.get_path() != objective_state.get_path():
@@ -28,9 +31,12 @@ def human(initial_state):
         
         if current_state.pos == (len(board)-1, 0):
             draw_board(current_state)
-            print('\nYou Lose\n')
-            print("Solution: ", objective_state.pieces_hits)
-            print("Your play: ", current_state.pieces_hits)
+            print('\nYou Lose')
+            print("Your play: ", get_path_dir(current_state.get_path()[1:]), '\n')
+            op = input('Press H to show solution or any key to continue...')
+            if op.upper() == 'H':
+                print("Solution: ", get_path_dir(objective_state.get_path()[1:]))
+                input('Press any key to continue...')
             won = False
             break
         

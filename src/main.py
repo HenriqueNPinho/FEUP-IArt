@@ -8,6 +8,7 @@ import human
 from board import draw_board
 import sys
 import performance
+import solve
 
 def main():
     if len(sys.argv) == 2:
@@ -15,7 +16,7 @@ def main():
     if len(sys.argv) < 2:
         (board_size, pieces) = get_level(choose_puzzle())
         
-    init(board_size, pieces) 
+    menu(init(board_size, pieces)) 
 
 
 def init(board_size, pieces):
@@ -25,11 +26,9 @@ def init(board_size, pieces):
 
     initial_pos = (0, board_size - 1)
 
-    initial_state = State(initial_pos, board, pieces)
+    return State(initial_pos, board, pieces)
 
-    menu(initial_state)
-
-
+    
 def choose_puzzle():
     while True:
         print('\n1 - Board 5x5')
@@ -50,7 +49,6 @@ def choose_puzzle():
 
 
 def menu(initial_state):
-    new_level = False
     while True:
         print('\n=========================')
         print('|                       |')
@@ -59,8 +57,16 @@ def menu(initial_state):
         print('=========================')
         draw_board(initial_state)
         print('\n')
-        print('1 - Player', '2 - CPU', '3 - Level', '4 - Performance Metrics', '0 - Exit', sep='\n')
+        print('1 - Player', '2 - CPU', '3 - Level', '4 - Performance Metrics', '5 - Solve all puzzles', '', '0 - Exit', sep='\n')
         aux = input('\n> ')
+
+        if aux == '5':
+            print('\n1 - Easy', '2 - Medium', '3 - Hard', sep='\n')
+            diff = input('> ')
+            print('\n1 - BFS', '2 - DFS', '3 - A*', sep='\n')
+            algo = input('> ')
+            print()
+            solve.solve_all_puzzles(diff, algo)
 
         if aux == '4':
             bfs_start = time.time()
@@ -81,8 +87,9 @@ def menu(initial_state):
 
 
         elif aux == '3':
-            new_level = True
-            break
+            (board_size, pieces) = get_level(choose_puzzle())
+            initial_state = init(board_size, pieces)
+            continue
         
         elif aux == '2':
             while True:
@@ -112,10 +119,6 @@ def menu(initial_state):
             human.human(initial_state)
         elif aux == '0':
             return
-
-    if new_level:
-        (board_size, pieces) = get_level(choose_puzzle())
-        init(board_size, pieces)
 
 
 def get_path_dir(path):
