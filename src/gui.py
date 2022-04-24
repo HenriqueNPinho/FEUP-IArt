@@ -17,13 +17,20 @@ i=1
 def get_font(size):
     return pygame.font.Font("../assets/font.ttf", size)
 
+def check(pos):
+    print(pos)
+
 def play():
+
     PLAY_BACK = Button(image=None, pos=(1000, 660), 
                             text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
 
     (board_size, pieces)= get_level('lvl'+str(i))
-    
+    square_size= int(720/board_size)
+    pos=(square_size/2, ( square_size*(board_size*2-1) )/2)
 
+    print(board_size)
+    print(pos)
     playing=True
     while(playing):
         clock.tick(30)
@@ -33,8 +40,11 @@ def play():
         SCREEN.fill("White")
         SCREEN.blit(BG, (720, 0))  
 
-        draw_board(SCREEN, int(720/board_size))
-        draw_pieces(SCREEN, int(720/board_size), pieces)
+        ##draw_path(SCREEN, path)
+        draw_board(SCREEN, square_size)
+        draw_pieces(SCREEN, square_size, pieces)
+        draw_main_piece(SCREEN, pos)
+        
 
         for button in [PLAY_BACK]:
             button.changeColor(PLAY_MOUSE_POS)
@@ -49,6 +59,10 @@ def play():
                     reset_board()
                     choose_lvl()
                     playing=False
+                ##check se estou a carregar na peça
+                    ##desenhar legal moves
+                    ##guardar path
+                    
         pygame.display.update()
 
 
