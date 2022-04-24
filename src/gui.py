@@ -3,6 +3,8 @@ from file import get_level
 from button import Button
 from draw import *
 from pieces import *
+import main
+from operators import *
 
 
 pygame.init()
@@ -13,6 +15,51 @@ pygame.display.set_caption("Chess Snake Puzzles")
 pygame.display.set_icon(pygame.image.load("../pieces/king.png"))
 BG = pygame.image.load("../assets/Background.png") #mudar imagem
 i=1
+
+def convert_to_boardPos(p, square_size):
+    return (square_size/2 + (p[0])*square_size,   ( square_size*((p[1]+1)*2-1) ) /2 )
+
+def get_dir(oldPos, newPos):
+    (x,y)=oldPos
+    (x1, y1) = newPos
+
+    if(x>x1):
+        return 'L'
+    elif (x<x1):
+        return 'R'
+    elif(y>y1):
+        return 'U'
+    elif(y<y1): 
+        return 'D'
+
+def new_state(state, pos, dir):
+    return State(pos, state.board, state.pieces, dir , state, state.depth + 1)
+
+
+def valid_moves(state):
+    valid_pos=[]
+    
+    for d in ['L', 'R', 'U', 'D']:
+        new_state = get_new_state(state, d)
+        
+        if valid_state(new_state):
+            valid_pos.append(new_state.pos)
+    return(valid_pos)
+ 
+
+def move_piece(fromPos, toPos, valid_M):
+    
+    for pos in valid_M:
+        (x,y)=pos  
+        if toPos == (x,y):
+            return toPos
+    return fromPos ##
+
+def convert_mouse_pos(pos,square_size):
+    (x, y) = pos
+    line = x  / square_size
+    col = y / square_size
+    return (int(line), int(col))
 
 def get_font(size):
     return pygame.font.Font("../assets/font.ttf", size)
@@ -27,24 +74,30 @@ def play():
 
     (board_size, pieces)= get_level('lvl'+str(i))
     square_size= int(720/board_size)
-    pos=(square_size/2, ( square_size*(board_size*2-1) )/2)
+    player_pos=( int(square_size/2), int(( square_size*(board_size*2-1) )/2))
 
     print(board_size)
-    print(pos)
+    print(player_pos)
     playing=True
+    state=main.init(board_size, pieces)
+    pieceSelected=False
+
     while(playing):
         clock.tick(30)
 
+        
+        valid_M=valid_moves(state)
+        
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("White")
         SCREEN.blit(BG, (720, 0))  
 
-        ##draw_path(SCREEN, path)
+        draw_path(SCREEN, state.get_path())
         draw_board(SCREEN, square_size)
         draw_pieces(SCREEN, square_size, pieces)
-        draw_main_piece(SCREEN, pos)
-        
+        draw_main_piece(SCREEN, player_pos)
+        draw_legal_moves(SCREEN,square_size,valid_M)
 
         for button in [PLAY_BACK]:
             button.changeColor(PLAY_MOUSE_POS)
@@ -56,13 +109,25 @@ def play():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    playing=False
                     reset_board()
                     choose_lvl()
-                    playing=False
-                ##check se estou a carregar na peça
-                    ##desenhar legal moves
+
+                print(player_pos)
+
+                if pieceSelected:
                     ##guardar path
-                    
+                    old_pos=convert_mouse_pos(player_pos, square_size)
+                    newPos=move_piece(old_pos,pieceSelPos, valid_M)
+                    if not old_pos == newPos:  
+                        state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras
+                    print(get_dir(old_pos, newPos))
+                    player_pos= convert_to_boardPos(newPos, square_size)
+
+                pieceSelected = not pieceSelected
+                if pieceSelected:
+                    pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
+                ##check se estou a carregar na peça   
         pygame.display.update()
 
 

@@ -57,7 +57,10 @@ def draw_main_piece(screen, pos):
 
 def draw_path(screen, path):
     for i in range(0,len(path), 1):
-        (x,y)=path[i]
+        (x,y,_)=path[i]
         pygame.draw.rect(screen, (128, 128, 128), (x*144, y*144, 144 , 144),0)
 
-    
+def draw_legal_moves(screen, square_size, pos):
+    for p in pos:
+        pygame.draw.circle(screen, (0,255,0),
+                         ( square_size/2 + (p[0])*square_size,   ( square_size*((p[1]+1)*2-1) ) /2 ), 10)
