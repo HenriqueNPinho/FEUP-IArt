@@ -1,11 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def draw_chart_time(size, values):
+def draw_chart_time(size, values, lvl=None):
     x = np.array(["BFS", "DFS", "A*"])
     y = np.array([values[0], values[1], values[2]])
 
-    plt.title(f"Board {size}x{size}")
+    if not lvl == None:
+        plt.title(f"Board {size}x{size} - Level {lvl}")
+    else:
+        plt.title(f"Board {size}x{size}")
     plt.xlabel("Time Spent (s)")
     plt.ylabel("Search Methods")
 
@@ -16,11 +19,14 @@ def draw_chart_time(size, values):
         
     plt.show()
 
-def draw_chart_max(size, values):
+def draw_chart_max(size, values, lvl=None):
     x = np.array(["BFS", "DFS", "A*"])
     y = np.array([values[0], values[1], values[2]])
 
-    plt.title(f"Board {size}x{size}")
+    if not lvl == None:
+        plt.title(f"Board {size}x{size} - Level {lvl}")
+    else:
+        plt.title(f"Board {size}x{size}")
     plt.xlabel("Maximum Memory (KB)")
     plt.ylabel("Search Methods")
 
@@ -31,11 +37,14 @@ def draw_chart_max(size, values):
 
     plt.show()
 
-def draw_chart_expanded(size, values):
+def draw_chart_expanded(size, values, lvl=None):
     x = np.array(["BFS", "DFS", "A*"])
     y = np.array([values[0], values[1], values[2]])
 
-    plt.title(f"Board {size}x{size}")
+    if not lvl == None:
+        plt.title(f"Board {size}x{size} - Level {lvl}")
+    else:
+        plt.title(f"Board {size}x{size}")
     plt.xlabel("Number of Expanded Nodes")
     plt.ylabel("Search Methods")
 

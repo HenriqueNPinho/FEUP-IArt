@@ -1,7 +1,6 @@
 import sys
 from time import time
-
-from numpy import diff
+import performance
 from file import get_level
 import main
 import search
@@ -12,6 +11,9 @@ def solve_all_puzzles(difficulty, algo):
         for i in range(1,23):
             (board_size, pieces) = get_level('lvl'+str(i))
             initial_state = main.init(board_size, pieces)
+            times = []
+            max = []
+            states = []
             for j in range(1,4):
                 start = time()
                 if j == 1:
@@ -25,10 +27,18 @@ def solve_all_puzzles(difficulty, algo):
                     (final_state, max_states, states_expanded)  = search.a_star(initial_state)
                 end = time()
 
+                times.append(end-start)
+                max.append(max_states*sys.getsizeof(final_state)/1000)
+                states.append(states_expanded)
+
                 print(f'Level {i}')
                 print(f'Time: {end - start:.4f}s')
                 print(f'Nodes expanded: {states_expanded}')
                 print(f'Max Memory: {max_states*sys.getsizeof(final_state)/1000} KB\n\n')
+            
+            #performance.draw_chart_time(len(initial_state.board), times, i)
+            #performance.draw_chart_max(len(initial_state.board), max, i)
+            #performance.draw_chart_expanded(len(initial_state.board), states, i)
                 
     if difficulty == '0':
         for i in range(1, 4):
