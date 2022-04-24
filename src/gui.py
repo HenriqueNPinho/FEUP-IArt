@@ -3,7 +3,6 @@ from file import get_level
 from button import Button
 from draw import *
 from pieces import *
-import main
 from operators import *
 
 
@@ -15,6 +14,16 @@ pygame.display.set_caption("Chess Snake Puzzles")
 pygame.display.set_icon(pygame.image.load("../pieces/king.png"))
 BG = pygame.image.load("../assets/Background.png") #mudar imagem
 i=1
+
+def init(board_size, pieces):
+    board = [[' ']*board_size for _ in range(board_size)]
+
+    remove_pieces_moves(pieces, board_size) # remove not valid moves
+
+    initial_pos = (0, board_size - 1)
+
+    return State(initial_pos, board, pieces)
+
 
 def convert_to_boardPos(p, square_size):
     return (square_size/2 + (p[0])*square_size,   ( square_size*((p[1]+1)*2-1) ) /2 )
@@ -79,7 +88,7 @@ def play():
     print(board_size)
     print(player_pos)
     playing=True
-    state=main.init(board_size, pieces)
+    state=init(board_size, pieces)
     pieceSelected=False
 
     while(playing):
@@ -93,7 +102,7 @@ def play():
         SCREEN.fill("White")
         SCREEN.blit(BG, (720, 0))  
 
-        draw_path(SCREEN, state.get_path())
+        draw_path(SCREEN, state.get_path(), square_size)
         draw_board(SCREEN, square_size)
         draw_pieces(SCREEN, square_size, pieces)
         draw_main_piece(SCREEN, player_pos)
@@ -116,11 +125,11 @@ def play():
                 print(player_pos)
 
                 if pieceSelected:
-                    ##guardar path
+                    
                     old_pos=convert_mouse_pos(player_pos, square_size)
                     newPos=move_piece(old_pos,pieceSelPos, valid_M)
                     if not old_pos == newPos:  
-                        state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras
+                        state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras; check F; butoes -> reset, algoritmos;
                     print(get_dir(old_pos, newPos))
                     player_pos= convert_to_boardPos(newPos, square_size)
 
