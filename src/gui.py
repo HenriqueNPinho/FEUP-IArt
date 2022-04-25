@@ -1,3 +1,4 @@
+
 import pygame, sys
 from file import get_level
 from button import Button
@@ -53,6 +54,9 @@ def valid_moves(state):
         
         if valid_state(new_state):
             valid_pos.append(new_state.pos)
+
+    if state.parent_node != None :
+        valid_pos.append(state.parent_node.pos) ##melhorar
     return(valid_pos)
  
 
@@ -73,9 +77,6 @@ def convert_mouse_pos(pos,square_size):
 def get_font(size):
     return pygame.font.Font("../assets/font.ttf", size)
 
-def check(pos):
-    print(pos)
-
 def play():
 
     PLAY_BACK = Button(image=None, pos=(1000, 660), 
@@ -85,8 +86,6 @@ def play():
     square_size= int(720/board_size)
     player_pos=( int(square_size/2), int(( square_size*(board_size*2-1) )/2))
 
-    print(board_size)
-    print(player_pos)
     playing=True
     state=init(board_size, pieces)
     pieceSelected=False
@@ -106,7 +105,7 @@ def play():
         draw_board(SCREEN, square_size)
         draw_pieces(SCREEN, square_size, pieces)
         draw_main_piece(SCREEN, player_pos)
-        draw_legal_moves(SCREEN,square_size,valid_M)
+        draw_legal_moves(SCREEN,square_size,valid_M)   
 
         for button in [PLAY_BACK]:
             button.changeColor(PLAY_MOUSE_POS)
@@ -122,12 +121,15 @@ def play():
                     reset_board()
                     choose_lvl()
 
-                print(player_pos)
-
+                print("path")
+                print(state.get_path())
+                
                 if pieceSelected:
                     
                     old_pos=convert_mouse_pos(player_pos, square_size)
                     newPos=move_piece(old_pos,pieceSelPos, valid_M)
+                    if state.parent_node!= None and (newPos == state.parent_node.pos):
+                        state= state.parent_node
                     if not old_pos == newPos:  
                         state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras; check F; butoes -> reset, algoritmos;
                     print(get_dir(old_pos, newPos))
@@ -136,7 +138,8 @@ def play():
                 pieceSelected = not pieceSelected
                 if pieceSelected:
                     pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
-                ##check se estou a carregar na peça   
+
+              
         pygame.display.update()
 
 
