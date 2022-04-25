@@ -66,7 +66,7 @@ def move_piece(fromPos, toPos, valid_M):
         (x,y)=pos  
         if toPos == (x,y):
             return toPos
-    return fromPos ##
+    return fromPos 
 
 def convert_mouse_pos(pos,square_size):
     (x, y) = pos
@@ -121,25 +121,18 @@ def play():
                     reset_board()
                     choose_lvl()
 
-                print("path")
-                print(state.get_path())
-                
-                if pieceSelected:
+                ##peça
+                pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
+                old_pos=convert_mouse_pos(player_pos, square_size)
+                newPos=move_piece(old_pos,pieceSelPos, valid_M)
+
+                if state.parent_node!= None and (newPos == state.parent_node.pos):
+                    state= state.parent_node
+                if not old_pos == newPos:  
+                    state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras; check F; butoes -> reset, algoritmos;
                     
-                    old_pos=convert_mouse_pos(player_pos, square_size)
-                    newPos=move_piece(old_pos,pieceSelPos, valid_M)
-                    if state.parent_node!= None and (newPos == state.parent_node.pos):
-                        state= state.parent_node
-                    if not old_pos == newPos:  
-                        state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras; check F; butoes -> reset, algoritmos;
-                    print(get_dir(old_pos, newPos))
-                    player_pos= convert_to_boardPos(newPos, square_size)
-
-                pieceSelected = not pieceSelected
-                if pieceSelected:
-                    pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
-
-              
+                player_pos= convert_to_boardPos(newPos, square_size)
+          
         pygame.display.update()
 
 
