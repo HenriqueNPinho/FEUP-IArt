@@ -61,10 +61,10 @@ def menu(initial_state):
         aux = input('\n> ')
 
         if aux == '5':
-            print('\n1 - Easy', '2 - Medium', '3 - Hard', sep='\n')
-            diff = input('> ')
-            print('\n1 - BFS', '2 - DFS', '3 - A*', sep='\n')
-            algo = input('> ')
+            print('\n1 - Easy', '2 - Medium', '3 - Hard', '', '9 - Solve all', '0 - Solve all', sep='\n')
+            diff = input('\n> ')
+            print('\n1 - BFS', '2 - DFS', '3 - A* (n_hits)', '4 - A* (manhattam)', '5 - A* (n_hits+manhattam)', sep='\n')
+            algo = input('\n> ')
             print()
             solve.solve_all_puzzles(diff, algo)
 
@@ -74,17 +74,24 @@ def menu(initial_state):
             bfs_end = time.time()
             (final_state, max_states_dfs, states_expanded_dfs)  = search.dfs(initial_state)
             dfs_end = time.time()
-            (final_state, max_states_a_star, states_expanded_a_star) = search.a_star(initial_state)
-            a_star_end = time.time()
+            initial_state.heuristic = 1
+            (final_state, max_states_a_star_1, states_expanded_a_star_1) = search.a_star(initial_state)
+            a_star_1_end = time.time()
+            initial_state.heuristic = 2
+            (final_state, max_states_a_star_2, states_expanded_a_star_2) = search.a_star(initial_state)
+            a_star_2_end = time.time()
+            initial_state.heuristic = 3
+            (final_state, max_states_a_star_3, states_expanded_a_star_3) = search.a_star(initial_state)
+            a_star_3_end = time.time()
             
-            max_states = [max_states_bfs*sys.getsizeof(final_state)/1000, max_states_dfs*sys.getsizeof(final_state)/1000, max_states_a_star*sys.getsizeof(final_state)/1000]
-            times = [bfs_end - bfs_start, dfs_end - bfs_end, a_star_end - dfs_end]
-            states_expanded = [states_expanded_bfs, states_expanded_dfs, states_expanded_a_star]
+            max_states = [max_states_bfs*sys.getsizeof(final_state)/1000, max_states_dfs*sys.getsizeof(final_state)/1000, max_states_a_star_1*sys.getsizeof(final_state)/1000, max_states_a_star_2*sys.getsizeof(final_state)/1000, max_states_a_star_3*sys.getsizeof(final_state)/1000]
+            times = [bfs_end - bfs_start, dfs_end - bfs_end, a_star_1_end - dfs_end, a_star_2_end - a_star_1_end, a_star_3_end - a_star_2_end]
+            states_expanded = [states_expanded_bfs, states_expanded_dfs, states_expanded_a_star_1, states_expanded_a_star_2, states_expanded_a_star_3]
 
             performance.draw_chart_time(len(initial_state.board), times)
             performance.draw_chart_max(len(initial_state.board), max_states)
             performance.draw_chart_expanded(len(initial_state.board), states_expanded)
-
+            initial_state.heuristic = None
 
         elif aux == '3':
             (board_size, pieces) = get_level(choose_puzzle())
@@ -96,6 +103,13 @@ def menu(initial_state):
                 print('\nSearch Methods:\n')
                 print('1 - BFS (uninformed)', '2 - DFS (uninformed)', '3 - A* (informed)', '0 - Back', sep='\n')
                 i = input('\n> ')
+                if i == '3':
+                    print('\nHeuristic:')
+                    print('1 - n_hits', '2 - manhattam', '3 - both', sep='\n')
+                    heuristic = int(input('\n> '))
+                    if not (heuristic == 1 or heuristic == 2 or heuristic == 3):
+                        heuristic = None
+                    initial_state.heuristic = heuristic
                 start = time.time()
                 if i == '1':
                     (final_state, max_states, states_expanded)  = search.bfs(initial_state)
@@ -103,13 +117,21 @@ def menu(initial_state):
                     (final_state, max_states, states_expanded)  = search.dfs(initial_state)
                 elif i == '3':
                     (final_state, max_states, states_expanded) = search.a_star(initial_state)
-                elif i == '4':
-                    (final_state, max_states, states_expanded) = search.a_star_test(initial_state)
+                    initial_state.heuristic = None
                 else:
                     break
                 end = time.time()
 
                 draw_board(final_state)
+
+                if not final_state.heuristic == None:
+                    if final_state.heuristic == 1:
+                        print('Heuristic: n_hits')
+                    if final_state.heuristic == 2:
+                        print('Heuristic: manhattam')
+                    if final_state.heuristic == 3:
+                        print('Heuristic: n_hits+manhattam')
+
                 print(f'Time: {end - start:.4f}s')
                 print(f'Nodes expanded: {states_expanded}')
                 print(f'Max Memory: {max_states*sys.getsizeof(final_state)/1000} KB')

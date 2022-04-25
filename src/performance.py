@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def draw_chart_time(size, values, lvl=None):
-    x = np.array(["BFS", "DFS", "A*"])
-    y = np.array([values[0], values[1], values[2]])
+    x = np.array(["BFS", "DFS", "A* (n_hits)", "A* (manhattam)", "A* (n_hits+manhattam)"])
+    y = np.array([values[0], values[1], values[2], values[3], values[4]])
 
     if not lvl == None:
         plt.title(f"Board {size}x{size} - Level {lvl}")
@@ -20,8 +20,8 @@ def draw_chart_time(size, values, lvl=None):
     plt.show()
 
 def draw_chart_max(size, values, lvl=None):
-    x = np.array(["BFS", "DFS", "A*"])
-    y = np.array([values[0], values[1], values[2]])
+    x = np.array(["BFS", "DFS", "A* (n_hits)", "A* (manhattam)", "A* (n_hits+manhattam)"])
+    y = np.array([values[0], values[1], values[2], values[3], values[4]])
 
     if not lvl == None:
         plt.title(f"Board {size}x{size} - Level {lvl}")
@@ -38,8 +38,8 @@ def draw_chart_max(size, values, lvl=None):
     plt.show()
 
 def draw_chart_expanded(size, values, lvl=None):
-    x = np.array(["BFS", "DFS", "A*"])
-    y = np.array([values[0], values[1], values[2]])
+    x = np.array(["BFS", "DFS", "A* (n_hits)", "A* (manhattam)", "A* (n_hits+manhattam)"])
+    y = np.array([values[0], values[1], values[2], values[3], values[4]])
 
     if not lvl == None:
         plt.title(f"Board {size}x{size} - Level {lvl}")

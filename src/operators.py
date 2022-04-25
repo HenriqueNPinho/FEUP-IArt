@@ -12,7 +12,7 @@ def get_new_state(state, dir):
     elif dir == 'R':
         next_pos = (current_pos[0] + 1, current_pos[1])
 
-    return State(next_pos, state.board, state.pieces, dir, state, state.depth + 1)
+    return State(next_pos, state.board, state.pieces, dir, state, state.depth + 1, state.heuristic)
 
 
 def valid_state(state):
