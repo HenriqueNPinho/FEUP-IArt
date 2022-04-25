@@ -3,7 +3,6 @@ from time import time
 from board import draw_board
 from operators import *
 import search
-from main import get_path_dir
 
 keys = {
     'w':'U',
@@ -111,3 +110,10 @@ def get_score(time, n_moves, board_size, max_moves):
         else:
             time_score = 20/time * 100
     return (moves_score + time_score) / 2
+
+def get_path_dir(path):
+    path_dir = ''
+    for p in path:
+        (_,_, d) = p
+        path_dir += d+' '
+    return path_dir

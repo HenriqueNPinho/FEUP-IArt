@@ -1,8 +1,10 @@
+
 import pygame, sys
 from file import get_level
 from button import Button
 from draw import *
 from pieces import *
+from operators import *
 
 
 pygame.init()
@@ -14,27 +16,95 @@ pygame.display.set_icon(pygame.image.load("../pieces/king.png"))
 BG = pygame.image.load("../assets/Background.png") #mudar imagem
 i=1
 
+def init(board_size, pieces):
+    board = [[' ']*board_size for _ in range(board_size)]
+
+    remove_pieces_moves(pieces, board_size) # remove not valid moves
+
+    initial_pos = (0, board_size - 1)
+
+    return State(initial_pos, board, pieces)
+
+
+def convert_to_boardPos(p, square_size):
+    return (square_size/2 + (p[0])*square_size,   ( square_size*((p[1]+1)*2-1) ) /2 )
+
+def get_dir(oldPos, newPos):
+    (x,y)=oldPos
+    (x1, y1) = newPos
+
+    if(x>x1):
+        return 'L'
+    elif (x<x1):
+        return 'R'
+    elif(y>y1):
+        return 'U'
+    elif(y<y1): 
+        return 'D'
+
+def new_state(state, pos, dir):
+    return State(pos, state.board, state.pieces, dir , state, state.depth + 1)
+
+
+def valid_moves(state):
+    valid_pos=[]
+    
+    for d in ['L', 'R', 'U', 'D']:
+        new_state = get_new_state(state, d)
+        
+        if valid_state(new_state):
+            valid_pos.append(new_state.pos)
+
+    if state.parent_node != None :
+        valid_pos.append(state.parent_node.pos) ##melhorar
+    return(valid_pos)
+ 
+
+def move_piece(fromPos, toPos, valid_M):
+    
+    for pos in valid_M:
+        (x,y)=pos  
+        if toPos == (x,y):
+            return toPos
+    return fromPos 
+
+def convert_mouse_pos(pos,square_size):
+    (x, y) = pos
+    line = x  / square_size
+    col = y / square_size
+    return (int(line), int(col))
+
 def get_font(size):
     return pygame.font.Font("../assets/font.ttf", size)
 
 def play():
+
     PLAY_BACK = Button(image=None, pos=(1000, 660), 
                             text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
 
     (board_size, pieces)= get_level('lvl'+str(i))
-    
+    square_size= int(720/board_size)
+    player_pos=( int(square_size/2), int(( square_size*(board_size*2-1) )/2))
 
-    playing=True
-    while(playing):
+    state=init(board_size, pieces)
+
+    ## while playing ->> iniciar botoes etc, while not end state atualizar o resto
+    while not end_state(state):
         clock.tick(30)
 
+        
+        valid_M=valid_moves(state)
+        
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("White")
         SCREEN.blit(BG, (720, 0))  
 
-        draw_board(SCREEN, int(720/board_size))
-        draw_pieces(SCREEN, int(720/board_size), pieces)
+        draw_path(SCREEN, state.get_path(), square_size)
+        draw_board(SCREEN, square_size)
+        draw_pieces(SCREEN, square_size, pieces)
+        draw_main_piece(SCREEN, player_pos)
+        draw_legal_moves(SCREEN,square_size,valid_M)   
 
         for button in [PLAY_BACK]:
             button.changeColor(PLAY_MOUSE_POS)
@@ -48,9 +118,19 @@ def play():
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     reset_board()
                     choose_lvl()
-                    playing=False
-        pygame.display.update()
 
+                ##peça
+                pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
+                old_pos=convert_mouse_pos(player_pos, square_size)
+                newPos=move_piece(old_pos,pieceSelPos, valid_M)
+
+                if state.parent_node!= None and (newPos == state.parent_node.pos): ## andar p/tras, melhorar
+                    state= state.parent_node
+                if not old_pos == newPos:  
+                    state=new_state(state, newPos, get_dir(old_pos, newPos)) ##check F-> while not final -> you won or winner path; butoes -> reset, algoritmos;
+
+                player_pos= convert_to_boardPos(newPos, square_size)
+        pygame.display.update()
 
 def show_lvl():
     lvl_img = pygame.image.load("../lvls/"+str(i)+".png")

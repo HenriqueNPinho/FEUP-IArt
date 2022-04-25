@@ -51,4 +51,16 @@ def draw_pieces(screen, size, pieces):
         piece_img = pygame.transform.scale(piece_img, (size,size))
         (x,y) = piece.pos
         pygame.Surface.blit(screen, piece_img, (x*size, y*size))    
-    
+
+def draw_main_piece(screen, pos):
+    pygame.draw.circle(screen, (10, 10, 10),( pos[0] , pos[1]),40)
+
+def draw_path(screen, path, square_size):
+    for i in range(0,len(path)-1, 1):
+        (x,y,_)=path[i]
+        pygame.draw.rect(screen, (128, 128, 128), (x*square_size, y*square_size, square_size , square_size),0)
+
+def draw_legal_moves(screen, square_size, pos):
+    for p in pos:
+        pygame.draw.circle(screen, (0,255,0),
+                         ( square_size/2 + (p[0])*square_size,   ( square_size*((p[1]+1)*2-1) ) /2 ), 10)
