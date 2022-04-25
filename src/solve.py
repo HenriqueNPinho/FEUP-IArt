@@ -1,11 +1,20 @@
-import csv
+
 import sys
 from time import time
-import performance
+
+import pygame
+from draw import draw_board, draw_path, draw_pieces
 from file import get_level
 import main
 import search
 
+def solve_gui(state, screen, square_size, pieces):
+    screen.fill("White")
+    screen.blit(pygame.image.load("../assets/Background.png"), (720, 0)) 
+    draw_path(screen, state.get_path(), square_size)
+    draw_board(screen, square_size)
+    draw_pieces(screen, square_size, pieces)
+    pygame.display.update()
 
 def solve_all_puzzles(difficulty, algo):
     if difficulty == '9':

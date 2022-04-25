@@ -10,11 +10,12 @@ import sys
 import performance
 import solve
 
+
 def main():
     if len(sys.argv) == 2:
         (board_size, pieces) = get_level(sys.argv[1])
     if len(sys.argv) < 2:
-        (board_size, pieces) = get_level(choose_puzzle())
+        gui_cmd()
         
     menu(init(board_size, pieces)) 
 
@@ -28,7 +29,18 @@ def init(board_size, pieces):
 
     return State(initial_pos, board, pieces)
 
-    
+def gui_cmd():
+    while True:
+        print('\n1 - CMD')
+        print('2 - GUI')
+        i = input('\n> ')
+        if i == '1':
+            (board_size, pieces) = get_level(choose_puzzle())
+            menu(init(board_size, pieces)) 
+        elif i == '2':
+           import gui
+           gui.main_menu()
+
 def choose_puzzle():
     while True:
         print('\n1 - Board 5x5')

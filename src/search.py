@@ -1,10 +1,10 @@
 import queue
 from time import time
-from board import draw_board
 from operators import *
+from solve import solve_gui
 
 
-def dfs(current_state):
+def dfs(current_state, screen= None, square_size=None, pieces= None):
     visited_states = set()
     states = [current_state]
     state_expanded = False
@@ -30,11 +30,13 @@ def dfs(current_state):
             state_expanded = False
         
         visited_states.add(current_state)
+        if(screen != None):
+            solve_gui(current_state, screen, square_size, pieces)
     
     return (current_state, max_states, states_expanded)
 
 
-def a_star(current_state):
+def a_star(current_state, screen= None, square_size=None, pieces= None):
     visited_states = set()
     states = queue.PriorityQueue()
     states.put(current_state)
@@ -62,11 +64,13 @@ def a_star(current_state):
                 state_expanded = False
 
         visited_states.add(current_state)
+        if(screen != None):
+            solve_gui(current_state, screen, square_size, pieces)
 
     return (current_state, max_states, states_expanded)
 
 
-def bfs(current_state):
+def bfs(current_state, screen= None, square_size=None, pieces= None):
     visited_states = set()
     states = queue.Queue()
     states.put(current_state)
@@ -94,5 +98,7 @@ def bfs(current_state):
             state_expanded = False
 
         visited_states.add(current_state)
+        if(screen != None):
+            solve_gui(current_state, screen, square_size, pieces)
     
     return (current_state, max_states, states_expanded)

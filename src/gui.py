@@ -5,6 +5,7 @@ from button import Button
 from draw import *
 from pieces import *
 from operators import *
+from search import bfs, dfs, a_star
 
 
 pygame.init()
@@ -77,10 +78,32 @@ def convert_mouse_pos(pos,square_size):
 def get_font(size):
     return pygame.font.Font("../assets/font.ttf", size)
 
+def show_lvl():
+    lvl_img = pygame.image.load("../lvls/"+str(i)+".png")
+    lvl_img = pygame.transform.scale(lvl_img, (350,350))
+    SCREEN.blit(lvl_img, (470, 100))
+
 def play():
 
+
+    PLAY_BFS = Button(image=None, pos=(1000, 60), 
+                            text_input="BFS", font=get_font(85), base_color="white", hovering_color="Green")
+    PLAY_DFS = Button(image=None, pos=(1000, 150), 
+                            text_input="DFS", font=get_font(85), base_color="white", hovering_color="Green")                        
+    PLAY_ASTAR = Button(image=None, pos=(970, 240), 
+                            text_input="A*:", font=get_font(85), base_color="white", hovering_color="White")
+    PLAY_ASTARH1 = Button(image=None, pos=(765, 300), 
+                            text_input="hits", font=get_font(45), base_color="white", hovering_color="Green")
+    PLAY_ASTARH2 = Button(image=None, pos=(850, 350), 
+                            text_input="manhattan", font=get_font(45), base_color="white", hovering_color="Green")
+    PLAY_ASTARH3 = Button(image=None, pos=(1000, 400), 
+                            text_input="combo w/ search display", font=get_font(45), base_color="white", hovering_color="Green")
+    
+    PLAY_RESET = Button(image=None, pos=(1000, 560), 
+                            text_input="RESET ", font=get_font(75), base_color="white", hovering_color="Green")
     PLAY_BACK = Button(image=None, pos=(1000, 660), 
-                            text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green")
+                            text_input="BACK", font=get_font(75), base_color="white", hovering_color="Green") 
+   
 
     (board_size, pieces)= get_level('lvl'+str(i))
     square_size= int(720/board_size)
@@ -90,7 +113,7 @@ def play():
 
     ## while playing ->> iniciar botoes etc, while not end state atualizar o resto
     while(playing):
-        clock.tick(30)
+        
         SCREEN.fill("White")
         SCREEN.blit(BG, (720, 0)) 
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
@@ -98,7 +121,7 @@ def play():
         draw_board(SCREEN, square_size)
         draw_pieces(SCREEN, square_size, pieces)
         
-        for button in [PLAY_BACK]:
+        for button in [PLAY_BACK, PLAY_ASTAR, PLAY_BFS, PLAY_DFS, PLAY_RESET, PLAY_ASTARH1,  PLAY_ASTARH2,  PLAY_ASTARH3]:
                 button.changeColor(PLAY_MOUSE_POS)
                 button.update(SCREEN)
 
@@ -110,7 +133,11 @@ def play():
                     if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                         reset_board()
                         choose_lvl()
-
+                    if PLAY_RESET.checkForInput(PLAY_MOUSE_POS):
+                        playing=False
+                        play()
+        ##human
+        alg=False
         while not end_state(state):
      
             valid_M=valid_moves(state)
@@ -119,7 +146,7 @@ def play():
             SCREEN.fill("White")
             SCREEN.blit(BG, (720, 0)) 
 
-            for button in [PLAY_BACK]:
+            for button in [PLAY_BACK, PLAY_ASTAR, PLAY_BFS, PLAY_DFS, PLAY_RESET, PLAY_ASTARH1,  PLAY_ASTARH2,  PLAY_ASTARH3]:
                 button.changeColor(PLAY_MOUSE_POS)
                 button.update(SCREEN) 
 
@@ -128,20 +155,51 @@ def play():
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                
                     if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                        reset_board()
-                        choose_lvl()
-                    ##peça
-                    pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
-                    old_pos=convert_mouse_pos(player_pos, square_size)
-                    newPos=move_piece(old_pos,pieceSelPos, valid_M)
+                       reset_board()
+                       choose_lvl()
 
-                    if state.parent_node!= None and (newPos == state.parent_node.pos): ## andar p/tras, melhorar
-                       state= state.parent_node
-                    elif not old_pos == newPos:  
-                        state=new_state(state, newPos, get_dir(old_pos, newPos)) ##check F-> while not final -> you won or winner path; butoes -> reset, algoritmos;
-                    player_pos= convert_to_boardPos(newPos, square_size)
-            
+                    if PLAY_RESET.checkForInput(PLAY_MOUSE_POS):
+                        playing=False
+                        alg=False
+                        play()
+
+                    if len(state.get_path()) <2:
+                        if PLAY_BFS.checkForInput(PLAY_MOUSE_POS):
+                            alg=True
+                            (state,_,_)=bfs(state)
+
+                        if PLAY_DFS.checkForInput(PLAY_MOUSE_POS):
+                            alg=True
+                            (state,_,_)=dfs(state)
+
+                        if PLAY_ASTARH1.checkForInput(PLAY_MOUSE_POS):
+                            alg=True
+                            state.heuristic=1
+                            (state,_,_)=a_star(state)
+
+                        if PLAY_ASTARH2.checkForInput(PLAY_MOUSE_POS):
+                            alg=True
+                            state.heuristic=2
+                            (state,_,_)=a_star(state)
+
+                        if PLAY_ASTARH3.checkForInput(PLAY_MOUSE_POS):
+                            alg=True
+                            state.heuristic=3
+                            (state,_,_)=a_star(state, SCREEN, square_size, pieces) 
+                            
+                    if not alg:
+                        pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
+                        old_pos=convert_mouse_pos(player_pos, square_size)
+                        newPos=move_piece(old_pos,pieceSelPos, valid_M)
+
+                        if state.parent_node!= None and (newPos == state.parent_node.pos):
+                         state= state.parent_node
+                        elif not old_pos == newPos:  
+                            state=new_state(state, newPos, get_dir(old_pos, newPos))
+                        player_pos= convert_to_boardPos(newPos, square_size)
+                
             valid_M=valid_moves(state)
             draw_path(SCREEN, state.get_path(), square_size) 
             draw_board(SCREEN, square_size)
@@ -159,10 +217,7 @@ def play():
    
         pygame.display.update()
 
-def show_lvl():
-    lvl_img = pygame.image.load("../lvls/"+str(i)+".png")
-    lvl_img = pygame.transform.scale(lvl_img, (350,350))
-    SCREEN.blit(lvl_img, (470, 100))
+
 
 def choose_lvl():
     choosing =True
@@ -214,31 +269,7 @@ def choose_lvl():
         pygame.display.update()
 
     
-def options():
-    while True:
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("white")
-
-        OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
-
-        OPTIONS_BACK = Button(image=None, pos=(640, 460), 
-                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
-
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
-
-        pygame.display.update()
 
 def main_menu():
     menu_loop=True
@@ -250,16 +281,15 @@ def main_menu():
         MENU_TEXT = get_font(150).render("MAIN   MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("../assets/Play Rect.png"), pos=(640, 250), 
+        PLAY_BUTTON = Button(image=pygame.image.load("../assets/Play Rect.png"), pos=(640, 300), 
                             text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("../assets/Options Rect.png"), pos=(640, 400), 
-                            text_input="Game Rules", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("../assets/Quit Rect.png"), pos=(640, 550), 
+       
+        QUIT_BUTTON = Button(image=pygame.image.load("../assets/Quit Rect.png"), pos=(640, 450), 
                             text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
         
@@ -271,8 +301,6 @@ def main_menu():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     choose_lvl()
                     menu_loop=False
-                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
