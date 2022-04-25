@@ -20,3 +20,4 @@ How to play:
   - play using WASD to move the snake, B to go back and H for hints
 - GUI:
   - all the actions are done with the mouse
+  - you win when you reach "F" and you can't do any more moves 
