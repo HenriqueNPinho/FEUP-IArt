@@ -85,51 +85,78 @@ def play():
     (board_size, pieces)= get_level('lvl'+str(i))
     square_size= int(720/board_size)
     player_pos=( int(square_size/2), int(( square_size*(board_size*2-1) )/2))
-
+    playing = True
     state=init(board_size, pieces)
 
     ## while playing ->> iniciar botoes etc, while not end state atualizar o resto
-    while not end_state(state):
+    while(playing):
         clock.tick(30)
-
-        
-        valid_M=valid_moves(state)
-        
+        SCREEN.fill("White")
+        SCREEN.blit(BG, (720, 0)) 
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("White")
-        SCREEN.blit(BG, (720, 0))  
-
-        draw_path(SCREEN, state.get_path(), square_size)
         draw_board(SCREEN, square_size)
         draw_pieces(SCREEN, square_size, pieces)
-        draw_main_piece(SCREEN, player_pos)
-        draw_legal_moves(SCREEN,square_size,valid_M)   
-
+        
         for button in [PLAY_BACK]:
-            button.changeColor(PLAY_MOUSE_POS)
-            button.update(SCREEN)
+                button.changeColor(PLAY_MOUSE_POS)
+                button.update(SCREEN)
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                    reset_board()
-                    choose_lvl()
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                        reset_board()
+                        choose_lvl()
 
-                ##peça
-                pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
-                old_pos=convert_mouse_pos(player_pos, square_size)
-                newPos=move_piece(old_pos,pieceSelPos, valid_M)
+        while not end_state(state):
+     
+            valid_M=valid_moves(state)
+            PLAY_MOUSE_POS = pygame.mouse.get_pos()
+            
+            SCREEN.fill("White")
+            SCREEN.blit(BG, (720, 0)) 
 
-                if state.parent_node!= None and (newPos == state.parent_node.pos): ## andar p/tras, melhorar
-                    state= state.parent_node
-                if not old_pos == newPos:  
-                    state=new_state(state, newPos, get_dir(old_pos, newPos)) ##check F-> while not final -> you won or winner path; butoes -> reset, algoritmos;
+            for button in [PLAY_BACK]:
+                button.changeColor(PLAY_MOUSE_POS)
+                button.update(SCREEN) 
 
-                player_pos= convert_to_boardPos(newPos, square_size)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                        reset_board()
+                        choose_lvl()
+                    ##peça
+                    pieceSelPos = convert_mouse_pos(PLAY_MOUSE_POS, square_size)
+                    old_pos=convert_mouse_pos(player_pos, square_size)
+                    newPos=move_piece(old_pos,pieceSelPos, valid_M)
+
+                    if state.parent_node!= None and (newPos == state.parent_node.pos): ## andar p/tras, melhorar
+                       state= state.parent_node
+                    elif not old_pos == newPos:  
+                        state=new_state(state, newPos, get_dir(old_pos, newPos)) ##check F-> while not final -> you won or winner path; butoes -> reset, algoritmos;
+                    player_pos= convert_to_boardPos(newPos, square_size)
+            
+            valid_M=valid_moves(state)
+            draw_path(SCREEN, state.get_path(), square_size) 
+            draw_board(SCREEN, square_size)
+            draw_main_piece(SCREEN, player_pos)
+            draw_pieces(SCREEN, square_size, pieces)
+            draw_legal_moves(SCREEN,square_size,valid_M)
+              
+            pygame.display.update()
+        ##############################
+        
+        draw_path(SCREEN, state.get_path(), square_size) 
+        draw_board(SCREEN, square_size)
+        draw_main_piece(SCREEN, player_pos)
+        draw_pieces(SCREEN, square_size, pieces)
+   
         pygame.display.update()
 
 def show_lvl():
@@ -177,12 +204,12 @@ def choose_lvl():
                     choosing=False
                 if NEXT_LVL.checkForInput(PLAY_MOUSE_POS):
                     i+=1
-                    if i>20:
+                    if i>22:
                         i=1
                 if LAST_LEVEL.checkForInput(PLAY_MOUSE_POS):
                     i-=1
                     if i<1:
-                        i=20
+                        i=22
 
         pygame.display.update()
 
