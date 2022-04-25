@@ -86,11 +86,10 @@ def play():
     square_size= int(720/board_size)
     player_pos=( int(square_size/2), int(( square_size*(board_size*2-1) )/2))
 
-    playing=True
     state=init(board_size, pieces)
-    pieceSelected=False
 
-    while(playing):
+    ## while playing ->> iniciar botoes etc, while not end state atualizar o resto
+    while not end_state(state):
         clock.tick(30)
 
         
@@ -117,7 +116,6 @@ def play():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                    playing=False
                     reset_board()
                     choose_lvl()
 
@@ -126,15 +124,13 @@ def play():
                 old_pos=convert_mouse_pos(player_pos, square_size)
                 newPos=move_piece(old_pos,pieceSelPos, valid_M)
 
-                if state.parent_node!= None and (newPos == state.parent_node.pos):
+                if state.parent_node!= None and (newPos == state.parent_node.pos): ## andar p/tras, melhorar
                     state= state.parent_node
                 if not old_pos == newPos:  
-                    state=new_state(state, newPos, get_dir(old_pos, newPos)) ## add andar p/tras; check F; butoes -> reset, algoritmos;
-                    
-                player_pos= convert_to_boardPos(newPos, square_size)
-          
-        pygame.display.update()
+                    state=new_state(state, newPos, get_dir(old_pos, newPos)) ##check F-> while not final -> you won or winner path; butoes -> reset, algoritmos;
 
+                player_pos= convert_to_boardPos(newPos, square_size)
+        pygame.display.update()
 
 def show_lvl():
     lvl_img = pygame.image.load("../lvls/"+str(i)+".png")
