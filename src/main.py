@@ -61,7 +61,7 @@ def menu(initial_state):
         aux = input('\n> ')
 
         if aux == '5':
-            print('\n1 - Easy', '2 - Medium', '3 - Hard', '', '9 - Solve all', '0 - Solve all', sep='\n')
+            print('\n1 - Easy', '2 - Medium', '3 - Hard', '9 - Solve all', '0 - Solve all', sep='\n')
             diff = input('\n> ')
             print('\n1 - BFS', '2 - DFS', '3 - A* (n_hits)', '4 - A* (manhattam)', '5 - A* (n_hits+manhattam)', sep='\n')
             algo = input('\n> ')
