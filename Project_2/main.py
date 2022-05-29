@@ -23,7 +23,7 @@ if __name__ == '__main__':
     columns = dataset.columns
 
     col_list = list(columns)
-    col_list = col_list.drop()
+    
     new_col_list = col_list[:-1]
 
     all_inputs = dataset[new_col_list].values
